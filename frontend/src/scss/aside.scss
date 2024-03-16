@@ -1,0 +1,176 @@
+@import 'common.scss';
+
+
+.window {
+    width: 100vw;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: start;
+    .aside, .empty {
+        width: 219px;
+        flex-shrink: 0;
+    }
+    .aside {
+        min-height: 100vh;
+        display: grid;
+        grid-template-rows: clamp(60px, 20vh, 100px) 1fr clamp(60px, 20vh, 96px);
+        border-right: 1px solid $line-color;
+        position: fixed;
+        top: 0;
+        left: 0;
+
+        .logo {
+            justify-self: center;
+            align-self: center;
+            width: 96px;
+            margin: 20px 20px 0 0;
+            img {
+                width: 100%;
+            }
+        }
+
+        .navbar {
+            border-top: 1px solid $line-color;
+            border-bottom: 1px solid $line-color;
+            padding: 60px 20px 20px;
+            box-sizing: border-box;
+
+            display: flex; 
+            flex-direction: column;
+            justify-content: space-between;
+
+            ul {
+                list-style: none;
+                li{
+                    &>a {
+                        height: 40px;
+                        width: 100%;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        
+                        color: $titel-color;
+                        font-size: 14px;
+                        font-weight: 500;
+                        
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        text-decoration: none;
+                        padding: 12px 5px 12px 16px;
+                        box-sizing: border-box;
+                        position: relative;
+                        
+                        &:focus {
+                            background-color: $blue;
+                            border-color: $blue;
+                            color: #fff;
+                            
+                            path {
+                                fill: #fff
+                            }
+                        }
+                    }
+                    .category {
+                        height: 40px;
+                        width: 100%;
+                        border-radius: 5px;
+                        border: 1px solid transparent;
+                        overflow: hidden;
+                        transition: all .2s;
+
+                        label {
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            height: 40px;
+                            width: 100%;
+                            padding: 12px 16px;
+                            box-sizing: border-box;
+                            transition: all .5s;
+
+                            color: $titel-color;
+                            font-size: 14px;
+                            font-weight: 500;
+
+                            svg{
+                                transition: all .5s;
+                            }
+                        }
+                        &>a {
+                            height: 40px;
+                            width: 100%;
+                            cursor: pointer;
+
+                            color: $blue;
+                            font-size: 14px;
+                            font-weight: 500;
+
+                            display: flex;
+                            align-items: center;
+                            text-decoration: none;
+                            padding: 12px 5px 12px 16px;
+                            box-sizing: border-box;
+
+                            &:focus {
+                                background-color: $blue;
+                                border-color: $blue;
+                                color: #fff;
+
+                                path {
+                                    fill: #fff
+                                }
+                            }
+                        }
+                    }
+
+                    &>input {
+                        position: absolute;
+                        z-index: -1;
+                        display: none;
+                        &:checked+div {
+                            height: 120px;
+                            border: 1px solid $blue;
+                            label {
+                                background-color: $blue;
+                                color: #fff;
+                                svg{
+                                    transform: rotate((90deg));
+                                    path {
+                                        fill: #fff
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }    
+            }
+            
+
+            .balance {
+                font-size: 14px;
+                font-weight: 500;
+                span {
+                    color: $blue;
+                }
+            }
+        }
+
+        .user {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: start;
+            gap: 16px;
+
+            .user__name {
+                font-size: 14px;
+            }
+        }
+    }
+    .content {
+        padding: 100px 60px 60px;
+        box-sizing: border-box;
+        min-height: 100vh;
+        flex: 1 1 auto;
+    }
+}

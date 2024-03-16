@@ -1,0 +1,26 @@
+@import 'common.scss';
+
+.container {
+    .form {
+        display: flex;
+        flex-direction: column;
+        width: clamp(300px, 90%, 397px);
+        margin-bottom: 20px;
+
+        input {
+            width: 100%;
+            height: 38px;
+            border: 1px solid $line-color;
+            border-radius: 4px;
+            background-color: transparent;
+            margin: 5px 0;
+            padding: 7px 16px;
+            box-sizing: border-box;
+        }
+    }
+    .actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+}

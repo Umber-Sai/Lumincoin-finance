@@ -1,0 +1,71 @@
+@import 'common.scss';
+
+
+
+.container {
+    width: 397px;
+    min-height: 100vh;
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .logo {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+    .title {
+        text-align: center;
+        margin-bottom: 20px;
+        color: $titel-color;
+        font-size: 40px;
+    }
+    .form {
+        margin-bottom: 20px;
+        .form-input {
+            display: flex;
+            border: 1px solid rgb(206, 212, 218);
+            border-radius: 4px;
+            height: 38px;
+            overflow: hidden;
+
+            margin-bottom: 10px;
+            .icon {
+                width: 38px;
+                background-color: #E9ECEF;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+            input {
+                width: 100%;
+                border: 0;
+                background-color: transparent;
+                outline: none;
+                padding: 7px 13px;
+                font-size: 15px;
+            }
+        }
+        .checkbox {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+
+            label {
+                font-size: 12px;
+            }
+        }
+    }
+    .btn.blue {
+        margin-bottom: 10px;
+    }
+    .form-link {
+        font-size: 12px;
+        a {
+            margin-left: 10px;
+            color: $blue;
+        }
+    }
+}

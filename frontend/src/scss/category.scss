@@ -1,0 +1,39 @@
+@import 'common.scss';
+
+.cards {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    .card{
+        border: 1px solid $line-color;
+        border-radius: 12px;
+        width: 352px;
+        padding: 20px;
+        box-sizing: border-box;
+        .title {
+            margin-bottom: 10px;
+        }
+        .card__actions {
+            display: flex;
+            gap: 10px;
+        }
+    }
+    .add-card {
+        display: inline-block;
+        text-decoration: none;
+        padding: 44px 0;
+        cursor: pointer;
+        border: 1px solid $line-color;
+        border-radius: 12px;
+        width: 352px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-weight: 500;
+        font-size: 33px;
+        color: $line-color;
+    }
+}
+

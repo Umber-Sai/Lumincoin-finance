@@ -1,0 +1,106 @@
+<div class="container">
+    <h1 class="title">Главная</h1>
+    <ul class="timebar">
+        <li>
+            <input name="date" type="radio" id="today" checked>
+            <label for="today" class="btn transparent">
+                <span >Сегодня</span>
+            </label>
+        </li>
+        <li>
+            <input name="date" type="radio" id="week">
+            <label for="week" class="btn transparent">
+                <span >Неделя</span>
+            </label>
+        </li>
+        <li>
+            <input name="date" type="radio" id="month">
+            <label for="month" class="btn transparent">
+                <span >Месяц</span>
+            </label>
+        </li>
+        <li>
+            <input name="date" type="radio" id="year">
+            <label for="year" class="btn transparent">
+                <span >Год</span>
+            </label>
+        </li>
+        <li>
+            <input name="date" type="radio" id="all">
+            <label for="all" class="btn transparent">
+                <span >Все</span>
+            </label>
+        </li>
+        <li class="interval">
+            <input name="date" type="radio" id="interval">
+            <label for="interval" class="btn transparent">
+                <span >Интервал</span>
+            </label>
+            <div class="option">
+                <span>c</span>
+                <input type="text" placeholder="Дата" id="fromDate">
+                <span>по</span>
+                <input type="text" placeholder="Дата" id="toDate">
+            </div>
+        </li>
+    </ul>
+    <div class="graphs">
+        <div class="graph__container">
+            <h2 class="title">Доходы</h2>
+            <ul class="values">
+                <li class="val">
+                    <div class="color" style="background-color: #DC3545;"></div>
+                    <span>Red</span>
+                </li>
+                <li class="val">
+                    <div class="color" style="background-color: #FD7E14;"></div>
+                    <span>Orange</span>
+                </li>
+                <li class="val">
+                    <div class="color" style="background-color: #FFC107;"></div>
+                    <span>Yellow</span>
+                </li>
+                <li class="val">
+                    <div class="color" style="background-color: #20C997;"></div>
+                    <span>Green</span>
+                </li>
+                <li class="val">
+                    <div class="color" style="background-color: #0D6EFD;"></div>
+                    <span>Blue</span>
+                </li>
+            </ul>
+            <div class="graph">
+                <img src="./static/img/main/graph.png" alt="graph">
+            </div>
+        </div>
+        <div class="line"></div>
+        <div class="graph__container">
+            <h2 class="title">Расходы</h2>
+            <ul class="values">
+                <li class="val">
+                    <div class="color" style="background-color: #DC3545;"></div>
+                    <span>Red</span>
+                </li>
+                <li class="val">
+                    <div class="color" style="background-color: #FD7E14;"></div>
+                    <span>Orange</span>
+                </li>
+                <li class="val">
+                    <div class="color" style="background-color: #FFC107;"></div>
+                    <span>Yellow</span>
+                </li>
+                <li class="val">
+                    <div class="color" style="background-color: #20C997;"></div>
+                    <span>Green</span>
+                </li>
+                <li class="val">
+                    <div class="color" style="background-color: #0D6EFD;"></div>
+                    <span>Blue</span>
+                </li>
+            </ul>
+            <div class="graph">
+                <img src="./static/img/main/graph2.png" alt="graph">
+            </div>
+        </div>
+    </div>
+</div>
