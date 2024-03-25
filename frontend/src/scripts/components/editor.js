@@ -8,7 +8,7 @@ class Common {
 
         this.inputs = {
             income : [{p : 'Название...', id : 'name'}],
-            title : [{p : 'Название...', id : 'name'}],
+            expenses : [{p : 'Название...', id : 'name'}],
             transactions : [
                 {p : 'Тип...', id : 'type'},
                 {p : 'Категория...', id : 'category'},
@@ -41,7 +41,7 @@ export class Create extends Common {
 
         this.title = {
             income : 'Создание категории доходов',
-            title : 'Создание категории расходов',
+            expenses : 'Создание категории расходов',
             transactions : 'Создание дохода/расхода'
         }
 

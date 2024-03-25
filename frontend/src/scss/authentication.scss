@@ -3,6 +3,7 @@
 
 
 .container {
+    padding: 60px;
     width: 397px;
     min-height: 100vh;
     margin: 0 auto;
@@ -23,6 +24,13 @@
     }
     .form {
         margin-bottom: 20px;
+        .input-error {
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 10px;
+            padding: 0 10px;
+            color: red;
+        }
         .form-input {
             display: flex;
             border: 1px solid rgb(206, 212, 218);
@@ -31,6 +39,9 @@
             overflow: hidden;
 
             margin-bottom: 10px;
+            &.noValid {
+                border-color: red;
+            }
             .icon {
                 width: 38px;
                 background-color: #E9ECEF;
