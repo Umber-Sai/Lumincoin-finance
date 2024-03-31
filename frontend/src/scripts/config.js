@@ -1,3 +1,3 @@
 export const Config = {
-    startPage : '#/login',
+    startPage : '#/main',
 }

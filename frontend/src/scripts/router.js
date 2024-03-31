@@ -1,6 +1,7 @@
 import { Category } from "./components/category.js";
 import { Create, Edit } from "./components/editor.js";
 import { Form } from "./components/form.js";
+import { Main } from "./components/main.js";
 import { Transactions } from "./components/transactions.js";
 import { Config } from "./config.js";
 
@@ -20,7 +21,7 @@ export class Router {
                 style : 'styles/authentication.css',
                 template : 'templates/authentication.html',
                 load : () => {
-                    new Form('signin')
+                    new Form('signin');
                 }
             },
             {
@@ -41,6 +42,7 @@ export class Router {
                 style : 'styles/main.css',
                 template : 'templates/main.html',
                 load : () => {
+                    new Main ();
                 }
             },
 
@@ -98,7 +100,7 @@ export class Router {
                 style : 'styles/editor.css',
                 template : 'templates/editor.html',
                 load : () => {
-                    new Edit('income', this.urlRoute[1])
+                    new Edit('income')
                 }
             },
 
@@ -128,7 +130,7 @@ export class Router {
                 style : 'styles/editor.css',
                 template : 'templates/editor.html',
                 load : () => {
-                    new Edit('expenses', this.urlRoute[1])
+                    new Edit('expenses')
                 }
             },
         ]

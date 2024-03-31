@@ -56,41 +56,20 @@
         }
     }
     .graphs {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 120px 1fr;
         align-items: center;
+        &:first-child {
+            border-right: 1px solid $line-color;
+        }
         .graph__container {
-            flex: 1 1 auto;
             .title {
                 margin-bottom: 20px;
                 text-align: center;
             }
-            .values {
-                list-style: none;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 15px;
-                margin-bottom: 40px;
-                .val {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    .color {
-                        width: 35px;
-                        height: 10px;
-                    }
-                    span {
-                        font-weight: 500;
-                        font-size: 14px;
-                    }
-                }
-            }
-            .graph {
-                text-align: center;
-                margin-bottom: 40px;
-            }
         }
         .line {
+            justify-self: center;
             height: 450px;
             width: 1px;
             background-color: $line-color;

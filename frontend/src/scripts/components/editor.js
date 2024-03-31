@@ -52,9 +52,10 @@ export class Create extends Common {
 }
 
 export class Edit extends Common {
-    constructor (type, name) {
+    constructor (type) {
         super (type);
-        this.name = decodeURIComponent(name);
+        const url = window.location.href;
+        this.name = decodeURIComponent(url).split('?')[1];
 
         this.income = {
             title : 'Редактирование категории доходов'
@@ -66,7 +67,7 @@ export class Edit extends Common {
 
         this.titleElement.innerText = this[type].title;
         this.greenBtnElement.innerText = 'Сохранить';
-        this.inputElements.name.value = name
+        this.inputElements.name.value = this.name;
         
     }
 }
