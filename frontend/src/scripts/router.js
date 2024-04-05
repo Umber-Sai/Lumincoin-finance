@@ -17,20 +17,20 @@ export class Router {
         this.authRoutes = [
             {
                 name : 'Вход в систему',
-                rout : '#/signin',
-                style : 'styles/authentication.css',
-                template : 'templates/authentication.html',
-                load : () => {
-                    new Form('signin');
-                }
-            },
-            {
-                name : 'Регистрация',
                 rout : '#/login',
                 style : 'styles/authentication.css',
                 template : 'templates/authentication.html',
                 load : () => {
-                    new Form('login')
+                    new Form('login');
+                }
+            },
+            {
+                name : 'Регистрация',
+                rout : '#/signup',
+                style : 'styles/authentication.css',
+                template : 'templates/authentication.html',
+                load : () => {
+                    new Form('signup')
                 }
             },
         ]
@@ -108,29 +108,29 @@ export class Router {
 
             {
                 name : 'Расходы',
-                rout : '#/expenses',
+                rout : '#/expense',
                 style : 'styles/category.css',
                 template : 'templates/category.html',
                 load : () => {
-                    new Category('expenses');
+                    new Category('expense');
                 }
             },
             {
                 name : 'Расходы',
-                rout : '#/expenses/create',
+                rout : '#/expense/create',
                 style : 'styles/editor.css',
                 template : 'templates/editor.html',
                 load : () => {
-                    new Create('expenses');
+                    new Create('expense');
                 }
             },
             {
                 name : 'Расходы',
-                rout : '#/expenses/edit',
+                rout : '#/expense/edit',
                 style : 'styles/editor.css',
                 template : 'templates/editor.html',
                 load : () => {
-                    new Edit('expenses')
+                    new Edit('expense')
                 }
             },
         ]

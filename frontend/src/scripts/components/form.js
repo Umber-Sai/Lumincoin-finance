@@ -1,3 +1,6 @@
+import { Config } from "../config";
+import { Auth } from "../services/auth";
+import { CustomHttp } from "../services/custom-http";
 
 export class Form {
     constructor(type) {
@@ -6,7 +9,10 @@ export class Form {
         this.formLinkElement = document.getElementById('form-link');
         this.formElement = document.getElementById('form');
         this.btnElement = document.getElementById('submitBtn');
-        this.checkbox = null;
+
+        this.checkbox = document.createElement('input');
+        this.checkbox.setAttribute('type', 'checkbox');
+            
         this.inputElements = [];
 
 
@@ -16,7 +22,7 @@ export class Form {
                 icon : 'static/img/authentication/person.svg',
                 placeholder : 'ФИО',
                 type : 'text',
-                regex : /[А-я][а-я]/
+                regex : /[А-я][а-я]*\s[А-я][а-я]*/
             },
             {
                 name : 'email',
@@ -31,37 +37,9 @@ export class Form {
                 placeholder : 'Пароль',
                 type : 'text',
                 regex: /(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
-                // validation (inputElement, errorElement) {
-                //     inputElement.addEventListener('blur', (event) => {
-                //         const value = event.target.value;
-                //         let errors = [];
-                //         if(!value) return;
-                //         if(value.length < 8) errors.push('не менее 8 символов');
-                //         if(!value.match(/\w/i)) errors.push('латинские буквы');
-                //         if(!value.match(/[A-Z]/)) errors.push('буквы верхнего регистра');
-                //         if(!value.match(/[a-z]/)) errors.push('буквы нижнего регистра');
-                //         if(!value.match(/\d/)) errors.push('содержать цифры');
-                //         if(!value.match(/\W+/)) errors.push('знаки препинания');
-
-                //         console.log(errors)
-
-                //         if(errors.length > 0) {
-                //             let message = 'Пароль должен содержать: ';
-                //             for (let i = 0; i < errors.length; i++) {
-                //                 message = message + (i === 0 ? ' ' : ', ') + errors[i];
-                //             }
-                //             this.valid = false;
-                //             errorElement.innerText = message + '.';
-                //             return
-                //         }
-
-                //         this.valid = true;
-                //         errorElement.innerText = '';
-                //     });
-                // }
             },
             {
-                name : 'repeatPassword',
+                name : 'passwordRepeat',
                 icon : 'static/img/authentication/lock.svg',
                 placeholder : 'Подтверждение пароля',
                 type : 'password',
@@ -69,49 +47,74 @@ export class Form {
             }
         ]
 
-        if(type === 'signin') {
+        if(type === 'login') {
             this.inputs.splice(3, 1);
             this.inputs.splice(0, 1);
         }
 
-        this.signin = {
+        this.login = {
             title: 'Вход',
-            formLink: 'Ещё нет аккаунта? <a href="#/login">Пройдите регистрацию</a>',
-            btnProcess () {
-                this.commonFormCheck();
-                if (this.checkbox.checked) {
-                    console.log('checked')
-                }
-
-            }
+            formLink: 'Ещё нет аккаунта? <a href="#/signup">Пройдите регистрацию</a>',
         }
 
-        this.login = {
+        this.signup = {
             title: 'Создайте аккаунт',
-            formLink: 'Уже есть аккаунт? <a href="#/signin">Войдите в систему</a>',
-            btnProcess () {
-                this.commonFormCheck();
-            }
+            formLink: 'Уже есть аккаунт? <a href="#/login">Войдите в систему</a>',
         }
 
         this.fillPage(type)
 
-        this.btnElement.addEventListener('click', this[type].btnProcess.bind(this))
-        
+        this.btnElement.addEventListener('click', () => {
+            this.processForm();  
+        })
     }
 
-    commonFormCheck () {
-        let formValid = true
-        this.inputs.forEach(item => {
-            item.element.validationCheck();
-            formValid = item.element.valid;
-        });
-        if (formValid) {
-            alert('pass')
-        } else {
-            alert('not pass')
+    async processForm () {
+        if (this.type === 'signup') {
+            let formValid = true;
+            this.inputs.forEach(input => {
+                input.element.validationCheck() ? {} : formValid = false;
+            })
+            if (!formValid) return 
+            try {
+                const name = this.inputs.find(item => item.name === 'fullName').element.inputElement.value.split(' ');
+                const response = await CustomHttp.request(Config.host + '/signup', "Post", {
+                    "name": name[1],
+                    "lastName": name[0],
+                    "email": this.inputs.find(item => item.name === 'email').element.inputElement.value,
+                    "password": this.inputs.find(item => item.name === 'password').element.inputElement.value,
+                    "passwordRepeat": this.inputs.find(item => item.name === 'passwordRepeat').element.inputElement.value
+                });
+                if (response.error) {
+                    throw new Error(response.message)
+                }
+            } catch (error) {
+                return console.log(error);
+            }
+            
+            const result = confirm('Хотите оставаться в системе?');
+            if(result){
+                this.checkbox.checked = true;
+            } else {
+                this.checkbox.checked = false;
+            }
         }
-        console.log(this.input)
+
+        const url = Config.host + '/login';
+        const response = await CustomHttp.request(url, 'Post', {
+            "email": this.inputs.find(item => item.name === 'email').element.inputElement.value,
+            "password": this.inputs.find(item => item.name === 'password').element.inputElement.value,
+            "rememberMe": this.checkbox.checked
+        });
+        if(response.error) {
+            console.log(response);
+            alert('Неверный логин или пароль')
+            return;
+        }
+        Auth.setUserInfo(response.user)
+        Auth.setTokens(response.tokens)
+
+        location.href = '#/main';
     }
 
     fillPage (type) {
@@ -122,7 +125,7 @@ export class Form {
 
             if(input.name === 'fullName') {
                 element.inputElement.addEventListener('input', (event) => {
-                    let x = event.target.value.replace(/[^\wа-яё\s]|\d/i, '');
+                    let x = event.target.value.replace(/[^\wа-яё\s]|\d|\w/i, '');
 
                     const letter = x.match(/(?:^[а-я])|(?:\s[а-я])/g);
                     if (letter) {
@@ -132,35 +135,31 @@ export class Form {
                 })
             }
 
-            if(type === 'login' && input.name === 'password') {
+            if(type === 'signup' && input.name === 'password') {
                 element.inputElement.addEventListener('blur', (event) => {
-                    this.inputs.find(item => item.name === 'repeatPassword').element.regex = event.target.value;
-                    console.log(this.inputs)
+                    this.inputs.find(item => item.name === 'passwordRepeat').element.regex = event.target.value;
                 });
             }
 
             this.formElement.appendChild(element.errorElement);
             this.formElement.appendChild(element.element);
 
-            input.element = element
-
+            input.element = element;
         });
 
-        if(type === 'signin') {
+        
+
+        if(type === 'login') {
             const checkboxElement = document.createElement('div');
             checkboxElement.className = 'checkbox';
 
-            const input = document.createElement('input');
-            input.setAttribute('type', 'checkbox')
-            input.setAttribute('id', 'rememberMe')
-            
-            this.checkbox = input;
+            this.checkbox.setAttribute('id', 'rememberMe');
 
             const label = document.createElement('label');
             label.setAttribute('for', 'rememberMe');
             label.innerText = 'Запомнить меня';
 
-            checkboxElement.appendChild(input);
+            checkboxElement.appendChild(this.checkbox);
             checkboxElement.appendChild(label);
 
             this.formElement.appendChild(checkboxElement);
@@ -177,8 +176,6 @@ class Input  {
         this.placeholder = input.placeholder;
         this.type = input.type;
         this.regex = input.regex;
-        this.valid = false
-
 
         this.errorElement = null;
         this.inputElement = null;
@@ -194,11 +191,11 @@ class Input  {
     }
 
     createElement () {
-        const formInput = document.createElement('label');
-        formInput.className = 'form-input'
-
         const errorElement = document.createElement('div');
         errorElement.className = 'input-error';
+
+        const formInput = document.createElement('label');
+        formInput.className = 'form-input'
         
         const iconElement = document.createElement('div');
         iconElement.className = 'icon';
@@ -224,20 +221,22 @@ class Input  {
 
     validationCheck () {
         const value = this.inputElement.value;
-        console.log(value)
         if(!value) {
             this.errorElement.innerText = 'Заполните поле';
             this.element.classList.add('noValid');
-            this.valid = false;
-            return
+            return false;
         }
 
         if(value.match(this.regex)) {
-            this.valid = true;
-        } else {    
-            this.errorElement.innerText = (this.name === 'repeatPassword' ? 'Пароли не совпадают' : 'Поле заполнено некорректно');
+            return true;
+        } else {  
+            const messageFor = {
+                'passwordRepeat' : 'Пароли не совпадают',
+                'fullName' : 'Введите Фамилию и Имя'
+            }
+            this.errorElement.innerText = messageFor[this.name] ? messageFor[this.name] : 'Поле заполнено некорректно';;
             this.element.classList.add('noValid');
-            this.valid = false;
+            return false;
         }
     }
 }
