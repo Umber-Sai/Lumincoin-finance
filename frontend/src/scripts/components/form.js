@@ -1,6 +1,6 @@
 import { Config } from "../config";
-import { Auth } from "../services/auth";
-import { CustomHttp } from "../services/custom-http";
+import { Auth } from "../services/auth.js";
+import { CustomHttp } from "../services/custom-http.js";
 
 export class Form {
     constructor(type) {
@@ -78,7 +78,7 @@ export class Form {
             if (!formValid) return 
             try {
                 const name = this.inputs.find(item => item.name === 'fullName').element.inputElement.value.split(' ');
-                const response = await CustomHttp.request(Config.host + '/signup', "Post", {
+                const response = await CustomHttp.request(Config.host + 'signup', "Post", {
                     "name": name[1],
                     "lastName": name[0],
                     "email": this.inputs.find(item => item.name === 'email').element.inputElement.value,
@@ -100,8 +100,7 @@ export class Form {
             }
         }
 
-        const url = Config.host + '/login';
-        const response = await CustomHttp.request(url, 'Post', {
+        const response = await CustomHttp.request(Config.host + 'login', 'Post', {
             "email": this.inputs.find(item => item.name === 'email').element.inputElement.value,
             "password": this.inputs.find(item => item.name === 'password').element.inputElement.value,
             "rememberMe": this.checkbox.checked
@@ -111,8 +110,10 @@ export class Form {
             alert('Неверный логин или пароль')
             return;
         }
+
         Auth.setUserInfo(response.user)
         Auth.setTokens(response.tokens)
+
 
         location.href = '#/main';
     }
