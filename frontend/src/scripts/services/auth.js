@@ -19,15 +19,18 @@ export class Auth {
 
             console.log(response)
 
-            if(response.status === 200) {
+            if(response && response.status === 200) {
                 const result = await response.json();
                 this.setTokens(result.tokens);
-                return
+                return true;
             }
-        }
-        // console.log(response.message);
 
-        location.href = '#/login';
+            window.location.href = '#/login'
+            return false
+        }
+
+        window.location.href = '#/login'
+        return false
     }
 
     static setUserInfo (userInfo) {

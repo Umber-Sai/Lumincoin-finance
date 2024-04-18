@@ -1,45 +1,75 @@
 import { Data } from "../../../../backendData";
+import { Config } from "../config";
+import { CustomHttp } from "../services/custom-http";
 
 export class Transactions {
     constructor () {
-        const tableData = Data.transactions; //request to backend
+        this.transactions = [];
+        this.table = document.getElementById('table_body');
 
-        tableData.forEach((transaction, i) => {
-            new Transaction(transaction, ++i);
+
+        document.getElementsByName('date').forEach(button => {
+            button.addEventListener('click', () => {
+                this.table.innerHTML = '';
+                this.transactions = []
+                this.requestTransactions(button.value);
+            })
         });
+    }
+
+    async requestTransactions (period) {
+        console.log(period);
+        const response = await CustomHttp.request(Config.host + 'operations?period=' + period );
+        console.log(response);
+        if(response) {
+            response.forEach( transactionInfo => {
+                const t = new Transaction(transactionInfo);
+                this.transactions.push(t);
+            });
+            this.transactions.sort(function (a, b) {
+                return a.id - b.id;
+            })
+            this.transactions.forEach(item => {
+                item.pushRow();
+            })
+            console.log(this.transactions)
+        }
     }
 }
 
+
+
+
+
+
+
+
 class Transaction {
-    constructor (data, id) {
+    constructor (data) {
         this.data = data
-        this.id = id;
-        this.motherElement = document.getElementById('table');
+        this.id = data.id;
+        this.motherElement = document.getElementById('table_body');
 
         this.popupElement = document.getElementById('popup');
         this.btnYesElement = document.getElementById('btnYes');
         this.btnNoElement = document.getElementById('btnNo');
 
         this.element = this.createElement();
-        this.motherElement.appendChild(this.element)
     }
 
     createElement() {
         const rowElement = document.createElement('div');
         rowElement.className = 'row';
 
-        const element = document.createElement('div');
-        element.className = 'id';
-        element.innerText = this.id;
-
-        rowElement.appendChild(element);
-
-        Object.keys(this.data).forEach(item => {
+        const rowItems = ['id', 'type', 'category', 'amount', 'date', 'comment'];
+        
+        rowItems.forEach(item => {
             const element = document.createElement('div');
-            element.className = item
+            element.className = item;
             element.innerText = this.data[item];
             if(item === 'type') {
-                element.classList.add((this.data[item] === 'доход'? 'green' : 'red'));
+                element.innerText = (this.data[item] === 'income'? 'доход' : 'расход');
+                element.classList.add((this.data[item] === 'income'? 'green' : 'red'));
             }
 
             rowElement.appendChild(element);
@@ -51,7 +81,7 @@ class Transaction {
         const trash = document.createElement('img');
         trash.setAttribute('src', './static/img/transactions/trash.svg');
         trash.setAttribute('alt', 'trash');
-        trash.onclick = this.deleteEvent.bind(this)
+        trash.onclick = this.deleteRow.bind(this)
 
         const editRow = document.createElement('a');
         editRow.setAttribute('href', "#/transactions/edit");
@@ -71,7 +101,11 @@ class Transaction {
         return rowElement;
     }
 
-    deleteEvent () {
+    pushRow () {
+        this.motherElement.appendChild(this.element);
+    }
+
+    deleteRow () {
         this.popupElement.style.display = 'flex';
 
         this.btnYesElement.onclick = () => {

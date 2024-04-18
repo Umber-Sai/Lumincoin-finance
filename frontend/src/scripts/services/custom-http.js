@@ -19,11 +19,13 @@ export class CustomHttp {
             params.body = JSON.stringify(body)
         }
 
-        const response = await fetch(url, params); 
+        let response = await fetch(url, params); 
 
         if(response.status === 401) {
-            Auth.relogin()
-            this.request(url, method, body)
+            const reloginStatus = await Auth.relogin();
+            if (reloginStatus) {
+                return this.request(url, method, body);
+            }
         }
 
         return await response.json();
