@@ -71,7 +71,7 @@ export class Router {
                 style : 'styles/editor.css',
                 template : 'templates/editor.html',
                 load : () => {
-                    new Create('transactions')
+                    new Edit ('transactions')
                 }
             },
 

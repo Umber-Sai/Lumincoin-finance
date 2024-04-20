@@ -80,7 +80,7 @@ class Card {
         const editBtnElement = document.createElement('a');
         editBtnElement.className = 'btn blue';
         editBtnElement.innerText = 'Редактировать';
-        editBtnElement.setAttribute('href', this.props.linkToEdit + 'id=' + this.id + '&title=' + this.name);
+        editBtnElement.setAttribute('href', this.props.linkToEdit + this.id);
 
         const deleteBtnElement = document.createElement('button');
         deleteBtnElement.className = 'btn red';

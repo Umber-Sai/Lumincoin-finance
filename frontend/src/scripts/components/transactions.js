@@ -15,12 +15,12 @@ export class Transactions {
                 this.requestTransactions(button.value);
             })
         });
+
+        this.requestTransactions('today')
     }
 
     async requestTransactions (period) {
-        console.log(period);
         const response = await CustomHttp.request(Config.host + 'operations?period=' + period );
-        console.log(response);
         if(response) {
             response.forEach( transactionInfo => {
                 const t = new Transaction(transactionInfo);
@@ -32,7 +32,6 @@ export class Transactions {
             this.transactions.forEach(item => {
                 item.pushRow();
             })
-            console.log(this.transactions)
         }
     }
 }
@@ -84,7 +83,7 @@ class Transaction {
         trash.onclick = this.deleteRow.bind(this)
 
         const editRow = document.createElement('a');
-        editRow.setAttribute('href', "#/transactions/edit");
+        editRow.setAttribute('href', "#/transactions/edit?" + this.id);
 
         const pen = document.createElement('img');
         pen.setAttribute('src', './static/img/transactions/pen.svg');
@@ -109,6 +108,7 @@ class Transaction {
         this.popupElement.style.display = 'flex';
 
         this.btnYesElement.onclick = () => {
+            CustomHttp.request(Config.host + 'operations/' + this.id, 'DELETE');
             this.popupElement.style.display = 'none';
             this.motherElement.removeChild(this.element);
         }
