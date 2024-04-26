@@ -87,14 +87,26 @@ class Common {
     collectBody() {
         let body = {}
         this.inputElements.forEach(sample => {
-            body[sample.id] = sample.element.value
+            const val = sample.element.value;
+            if(isNaN(val)) {
+                body[sample.id] = sample.element.value
+            } else {
+                body[sample.id] = parseInt(sample.element.value);
+            }
+            // body[sample.id] = sample.element.value
         })
         this.selectElements.forEach(sample => {
-            if(sample.id === 'category_id') {
-                body[sample.id] = parseInt(sample.element.value);
-            } else {
+            const val = sample.element.value;
+            if(isNaN(val)) {
                 body[sample.id] = sample.element.value
+            } else {
+                body[sample.id] = parseInt(sample.element.value);
             }
+            // if(sample.id === 'category_id') {
+            //     body[sample.id] = parseInt(sample.element.value);
+            // } else {
+            //     body[sample.id] = sample.element.value
+            // }
         });
         return body;
     }

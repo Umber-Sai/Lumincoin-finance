@@ -1,66 +1,75 @@
 import Chart from 'chart.js/auto'
 import { Auth } from '../services/auth';
 import { CustomHttp } from '../services/custom-http';
+import { Timebar } from '../common/timebar';
 
 export class Main {
     constructor () {
-      // this.incomeElement = document.getElementById('')
-      this.fillGraphs()
+      this.timebar = new Timebar(this.fillGraphs.bind(this));
+      this.incomeChart = null;
+      this.expenseChart = null;
 
-
-
-
-
-        (async function () {
-          const data = [
-            { year: 2010, count: 10 },
-            { year: 2011, count: 20 },
-            { year: 2012, count: 15 },
-            { year: 2013, count: 25 },
-            { year: 2014, count: 22 },
-            { year: 2015, count: 30 },
-            { year: 2016, count: 28 },
-          ];
-
-          new Chart(
-            document.getElementById('income'),
-            {
-              type: 'pie',
-              data: {
-                labels: data.map(row => row.year),
-                datasets: [
-                  {
-                    label: 'Acquisitions by year',
-                    data: data.map(row => row.count)
-                  }
-                ]
-              }
-            }
-          );
-          new Chart(
-            document.getElementById('acquisitions2'),
-            {
-              type: 'pie',
-              data: {
-                labels: data.map(row => row.year),
-                datasets: [
-                  {
-                    label: 'Acquisitions by year',
-                    data: data.map(row => row.count)
-                  }
-                ]
-              }
-            }
-          );
-        })();
     }
 
-    fillGraphs() {
-      try {
-        CustomHttp.request()
-      } catch (error) {
-        
-      }
+    fillGraphs(transactions) {
+      if(this.incomeChart) this.incomeChart.destroy()
+      if(this.expenseChart) this.expenseChart.destroy()
+
+
+      const Allincome = transactions.filter(item => item.type === 'income');
+      let incomeData = this.compress(Allincome);
+
+      this.incomeChart = new Chart(
+        document.getElementById('income'),
+        {
+          type: 'pie',
+          data: {
+            labels: incomeData.map(row => row.category),
+            datasets: [
+              {
+                label: 'Доходы',
+                data: incomeData.map(row => row.amount)
+              }
+            ]
+          }
+        }
+      );
+
+
+      const allExpense = transactions.filter(item => item.type === 'expense');
+      let expenseData = this.compress(allExpense);
+
+      this.expenseChart = new Chart(
+        document.getElementById('expense'),
+        {
+          type: 'pie',
+          data: {
+            labels: expenseData.map(row => row.category),
+            datasets: [
+              {
+                label: 'Расходы',
+                data: expenseData.map(row => row.amount)
+              }
+            ]
+          }
+        }
+      );
+    }
+
+    compress (compressedArray) {
+      let outputArray = []
+      compressedArray.forEach(element => {
+        const category = outputArray.find(item => item.category === element.category);
+        if(!category) {
+          outputArray.push({
+            category : element.category,
+            amount : element.amount
+          })
+        } else {
+          category.amount += element.amount
+        }
+      });
+      return outputArray
     }
 }
 

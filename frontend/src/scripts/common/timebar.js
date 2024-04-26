@@ -2,15 +2,26 @@ import { Config } from "../config";
 import { CustomHttp } from "../services/custom-http";
 
 export class Timebar {
-    static async getTransactions (period) {
+    constructor (cb) {
+        this.cb = cb;
+        document.getElementsByName('date').forEach(button => {
+            button.addEventListener('click', () => {
+                this.getTransactions(button.value)
+            })
+        });
+
+        this.getTransactions('today')
+    }
+
+
+    async getTransactions (period) {
         const response = await CustomHttp.request(Config.host + 'operations?period=' + period );
-        console.log(response)
-        if(!response) {
-            console.log(1)
+        if(response.length === 0) {
+            this.cb(false)
         }
-        // transactions.sort(function (a, b) {
-        //     return a.id - b.id;
-        // });
-        return response
+        response.sort(function (a, b) {
+            return a.id - b.id;
+        });
+        this.cb(response)
     }
 }

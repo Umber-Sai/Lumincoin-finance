@@ -9,24 +9,13 @@ export class Transactions {
     constructor () {
         this.transactions = [];
         this.table = document.getElementById('table_body');
-
-
-        Datepicker.mask(document.getElementById('fromDate'))
-
-        document.getElementsByName('date').forEach(button => {
-            button.addEventListener('click', () => {
-                this.table.innerHTML = '';
-                this.transactions = []
-                this.requestTransactions(button.value);
-            })
-        });
-
-        this.requestTransactions('today')
+        this.timebar = new Timebar(this.fillTable.bind(this));
     }
 
-    async requestTransactions (period) {
-        const transactions = await Timebar.getTransactions(period);
-        console.log(transactions);
+    fillTable(transactions) {
+        console.log(transactions)
+        this.table.innerHTML = '';
+        this.transactions = []
         if(transactions) {
             transactions.forEach( transactionInfo => {
                 const t = new Transaction(transactionInfo);
