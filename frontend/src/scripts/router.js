@@ -1,3 +1,4 @@
+import { Aside } from "./components/aside.js";
 import { Category } from "./components/category.js";
 import { Create, Edit } from "./components/editor.js";
 import { Form } from "./components/form.js";
@@ -153,6 +154,16 @@ export class Router {
         window.location.href = Config.startPage;
         return
     }
+    
+    async motherElement (idName) {
+        let motherElement = document.getElementById(idName);
+        if (!motherElement) {
+            this.bodyElement.innerHTML = await fetch('templates/aside.html').then(resp => resp.text());
+            new Aside()
+            motherElement = document.getElementById(idName);
+        }
+        return motherElement;
+    }
 
     async fillPage (motherElement) {
         this.styleElement.setAttribute('href', this.newRout.style);
@@ -161,12 +172,4 @@ export class Router {
         this.newRout.load();
     }
 
-    async motherElement (idName) {
-        let motherElement = document.getElementById(idName);
-        if (!motherElement) {
-            this.bodyElement.innerHTML = await fetch('templates/aside.html').then(resp => resp.text());
-            motherElement = document.getElementById(idName);
-        }
-        return motherElement;
-    }
 }

@@ -1,12 +1,17 @@
 import { Data } from "../../../../backendData";
+import { Datepicker, datepicker } from "../common/datepicker";
+import { Timebar } from "../common/timebar";
 import { Config } from "../config";
 import { CustomHttp } from "../services/custom-http";
+
 
 export class Transactions {
     constructor () {
         this.transactions = [];
         this.table = document.getElementById('table_body');
 
+
+        Datepicker.mask(document.getElementById('fromDate'))
 
         document.getElementsByName('date').forEach(button => {
             button.addEventListener('click', () => {
@@ -20,15 +25,13 @@ export class Transactions {
     }
 
     async requestTransactions (period) {
-        const response = await CustomHttp.request(Config.host + 'operations?period=' + period );
-        if(response) {
-            response.forEach( transactionInfo => {
+        const transactions = await Timebar.getTransactions(period);
+        console.log(transactions);
+        if(transactions) {
+            transactions.forEach( transactionInfo => {
                 const t = new Transaction(transactionInfo);
                 this.transactions.push(t);
             });
-            this.transactions.sort(function (a, b) {
-                return a.id - b.id;
-            })
             this.transactions.forEach(item => {
                 item.pushRow();
             })

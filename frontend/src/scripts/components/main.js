@@ -1,10 +1,11 @@
 import Chart from 'chart.js/auto'
 import { Auth } from '../services/auth';
+import { CustomHttp } from '../services/custom-http';
 
 export class Main {
     constructor () {
-
-
+      // this.incomeElement = document.getElementById('')
+      this.fillGraphs()
 
 
 
@@ -22,7 +23,7 @@ export class Main {
           ];
 
           new Chart(
-            document.getElementById('acquisitions'),
+            document.getElementById('income'),
             {
               type: 'pie',
               data: {
@@ -52,6 +53,14 @@ export class Main {
             }
           );
         })();
+    }
+
+    fillGraphs() {
+      try {
+        CustomHttp.request()
+      } catch (error) {
+        
+      }
     }
 }
 

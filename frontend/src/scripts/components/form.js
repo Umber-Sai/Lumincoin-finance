@@ -100,22 +100,33 @@ export class Form {
             }
         }
 
-        const response = await CustomHttp.request(Config.host + 'login', 'Post', {
-            "email": this.inputs.find(item => item.name === 'email').element.inputElement.value,
-            "password": this.inputs.find(item => item.name === 'password').element.inputElement.value,
-            "rememberMe": this.checkbox.checked
-        });
-        if(response.error) {
-            console.log(response);
-            alert('Неверный логин или пароль')
-            return;
+        let formValid = true;
+        this.inputs.forEach(input => {
+            input.element.validationCheck() ? {} : formValid = false;
+        })
+        if (!formValid) return 
+
+        try {
+            const response = await CustomHttp.request(Config.host + 'login', 'Post', {
+                "email": this.inputs.find(item => item.name === 'email').element.inputElement.value,
+                "password": this.inputs.find(item => item.name === 'password').element.inputElement.value,
+                "rememberMe": this.checkbox.checked
+            });
+            
+            if(response.error) {
+                alert('Неверный логин или пароль')
+                throw new Error(response.message)
+            }
+            Auth.setUserInfo(response.user)
+            Auth.setTokens(response.tokens)
+    
+            location.href = '#/main';
+            
+        } catch (error) {
+            console.error(error);
+            return
         }
 
-        Auth.setUserInfo(response.user)
-        Auth.setTokens(response.tokens)
-
-
-        location.href = '#/main';
     }
 
     fillPage (type) {

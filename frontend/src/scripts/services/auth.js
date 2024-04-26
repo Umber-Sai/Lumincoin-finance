@@ -37,8 +37,19 @@ export class Auth {
         localStorage.setItem(this.userInfo, JSON.stringify(userInfo));
     }
 
+    static getUserInfo () {
+        const userInfo = localStorage.getItem(this.userInfo);
+        return JSON.parse(userInfo)
+    }
+
     static setTokens (tokens) {
         localStorage.setItem(this.accessTocken, JSON.stringify(tokens.accessToken));
         localStorage.setItem(this.refreshTocken, JSON.stringify(tokens.refreshToken));
+    }
+
+    static logout () {
+        localStorage.removeItem(this.accessTocken)
+        localStorage.removeItem(this.refreshTocken)
+        localStorage.removeItem(this.userInfo)
     }
 }
