@@ -18,6 +18,10 @@ export class Main {
 
       const Allincome = transactions.filter(item => item.type === 'income');
       let incomeData = this.compress(Allincome);
+      if(incomeData.length === 0) {
+        incomeData = [{category : 'У вас нет доходов', amount : 1}]
+      }
+
 
       this.incomeChart = new Chart(
         document.getElementById('income'),
@@ -38,6 +42,9 @@ export class Main {
 
       const allExpense = transactions.filter(item => item.type === 'expense');
       let expenseData = this.compress(allExpense);
+      if(expenseData.length === 0) {
+        expenseData = [{category : 'У вас нет расходов', amount : 1}]
+      }
 
       this.expenseChart = new Chart(
         document.getElementById('expense'),

@@ -147,10 +147,11 @@ h2.title {
   font-size: 16px;
 }
 .container .timebar li.interval .option input {
-  width: 40px;
+  text-decoration: underline;
+  text-align: center;
+  width: 80px;
   border: 0;
   outline: none;
-  border-bottom: 1px solid #6C757D;
   margin: 0 20px;
 }
 .container .graphs {
