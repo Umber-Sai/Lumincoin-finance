@@ -41,18 +41,41 @@
                 </li>
             </ul>
             
-            <div class="balance">
+            <div class="balance" id="balance">
                 Баланс:
-                <span>500$</span>
+                <span id="balance_status">500</span>
+                <span>$</span>
             </div>
         </nav>
-        <div class="user">
+        <div class="user" id="user">
             <div class="user__img">
                 <img src="static/img/aside/avatar.png" alt="avatar">
             </div>
-            <div class="user__name">RomanChernov</div>
+            <div class="user__name" id="userName">RomanChernov</div>
         </div>
 
     </div>
     <div class="content" id="content"></div>
+</div>
+
+<div class="popup" id="balance_popup">
+    <div class="container">
+        <span>Баланс:</span>
+        <input type="text" id="change_balance">
+        <span>$</span>
+        <div class="popup_actions">
+            <button class="btn green" id="confirm_balance">Подтвердить</button>
+            <button class="btn red" id="cancel_balance">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<div class="popup" id="user_popup">
+    <div class="container">
+        <p>Выйти из аккаунта?</p>
+        <div class="popup_actions">
+            <button class="btn red" id="user_exit">Выйти</button>
+            <button class="btn blue" id="user_cancel">Отмена</button>
+        </div>
+    </div>
 </div>

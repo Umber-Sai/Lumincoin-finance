@@ -1,6 +1,4 @@
 import Chart from 'chart.js/auto'
-import { Auth } from '../services/auth';
-import { CustomHttp } from '../services/custom-http';
 import { Timebar } from '../common/timebar';
 
 export class Main {
