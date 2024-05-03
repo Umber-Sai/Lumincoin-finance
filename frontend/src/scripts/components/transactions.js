@@ -12,7 +12,6 @@ export class Transactions {
     }
 
     fillTable(transactions) {
-        console.log(transactions)
         this.table.innerHTML = '';
         this.transactions = []
         if(transactions) {

@@ -21,8 +21,8 @@ export class Aside {
             const input = document.getElementById('change_balance');
             input.value = this.balanceStatusElement.innerText
 
-            document.getElementById('confirm_balance').onclick = () => {
-                CustomHttp.request(Config.host + 'balance', 'PUT', {
+            document.getElementById('confirm_balance').onclick = async () => {
+                await CustomHttp.request(Config.host + 'balance', 'PUT', {
                     newBalance : input.value
                 });
                 this.balancePopup.style.display = 'none';
@@ -51,13 +51,14 @@ export class Aside {
     }
 
     fillAside () {
-        let observer = new MutationObserver(() => {
-            this.getBalance();
-        })
-        observer.observe(this.contentElement, {
-            childList: true,
-            subtree: true
-        });
+        // let observer = new MutationObserver(() => {
+        //     this.getBalance();
+        // })
+        // observer.observe(this.contentElement, {
+        //     childList: true,
+        //     subtree: true
+        // });
+        this.getBalance();
 
         const userInfo = Auth.getUserInfo();
         if(!userInfo) {

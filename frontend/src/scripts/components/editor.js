@@ -45,7 +45,6 @@ class Common {
         ]
         const selectElement = new Select(typeOptions, selectedType, 'type');
         selectElement.element.addEventListener('change', () => {
-            console.log(selectElement.element.value)
             this.changeCategoryOptions(selectElement.element.value)
         })
         this.selectElements.push(selectElement);
@@ -59,7 +58,6 @@ class Common {
     }
 
     async createCategorySelect (selectedType, selectedCategory = null) {
-        console.log(selectedType)
         const options = await this.getCategoryes(selectedType);
         const selectElement = new Select(options, selectedCategory, 'category_id');
         this.selectElements.push(selectElement);
@@ -223,7 +221,6 @@ export class Edit extends Common {
 
             if(!valid) return
             const body = this.collectBody();
-            console.log(body)
 
             CustomHttp.request(Config.host + this.api[type] + this.id, 'PUT', body);
             window.history.back();

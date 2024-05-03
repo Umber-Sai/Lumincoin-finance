@@ -35,7 +35,7 @@ export class Form {
                 name : 'password',
                 icon : 'static/img/authentication/lock.svg',
                 placeholder : 'Пароль',
-                type : 'text',
+                type : 'password',
                 regex: /(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
             },
             {

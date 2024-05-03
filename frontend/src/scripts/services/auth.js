@@ -14,22 +14,19 @@ export class Auth {
                     'Content-type': 'application/json',
                     'Accept': 'application/json',
                 },
-                body : JSON.stringify({refreshToken : refreshTocken})
+                body : JSON.stringify({"refreshToken" : refreshTocken})
             });
 
-            console.log(response)
 
             if(response && response.status === 200) {
                 const result = await response.json();
                 this.setTokens(result.tokens);
                 return true;
             }
-
-            window.location.href = '#/login'
-            return false
         }
 
         window.location.href = '#/login'
+        this.logout()
         return false
     }
 

@@ -14,6 +14,7 @@ export class Router {
         this.bodyElement = document.getElementById('body');
         this.newRout = null;
         this.urlRoute = null;
+        this.aside = null;
 
         this.authRoutes = [
             {
@@ -42,7 +43,8 @@ export class Router {
                 rout : '#/main',
                 style : 'styles/main.css',
                 template : 'templates/main.html',
-                load : () => {
+                load : async () => {
+                    await this.aside.getBalance()
                     new Main ();
                 }
             },
@@ -53,7 +55,8 @@ export class Router {
                 rout : '#/transactions',
                 style : 'styles/transactions.css',
                 template : 'templates/transactions.html',
-                load : () => {
+                load : async () => {
+                    await this.aside.getBalance()
                     new Transactions()
                 }
             },
@@ -62,7 +65,8 @@ export class Router {
                 rout : '#/transactions/create',
                 style : 'styles/editor.css',
                 template : 'templates/editor.html',
-                load : () => {
+                load : async () => {
+                    await this.aside.getBalance()
                     new Create('transactions')
                 }
             },
@@ -71,7 +75,8 @@ export class Router {
                 rout : '#/transactions/edit',
                 style : 'styles/editor.css',
                 template : 'templates/editor.html',
-                load : () => {
+                load : async () => {
+                    await this.aside.getBalance()
                     new Edit ('transactions')
                 }
             },
@@ -82,7 +87,8 @@ export class Router {
                 rout : '#/income',
                 style : 'styles/category.css',
                 template : 'templates/category.html',
-                load : () => {
+                load : async () => {
+                    await this.aside.getBalance()
                     new Category('income');
                 }
             },
@@ -91,7 +97,8 @@ export class Router {
                 rout : '#/income/create',
                 style : 'styles/editor.css',
                 template : 'templates/editor.html',
-                load : () => {
+                load : async () => {
+                    await this.aside.getBalance()
                     new Create('income')
                 }
             },
@@ -100,7 +107,8 @@ export class Router {
                 rout : '#/income/edit',
                 style : 'styles/editor.css',
                 template : 'templates/editor.html',
-                load : () => {
+                load : async () => {
+                    await this.aside.getBalance()
                     new Edit('income')
                 }
             },
@@ -112,7 +120,8 @@ export class Router {
                 rout : '#/expense',
                 style : 'styles/category.css',
                 template : 'templates/category.html',
-                load : () => {
+                load : async () => {
+                    await this.aside.getBalance()
                     new Category('expense');
                 }
             },
@@ -121,7 +130,8 @@ export class Router {
                 rout : '#/expense/create',
                 style : 'styles/editor.css',
                 template : 'templates/editor.html',
-                load : () => {
+                load : async () => {
+                    await this.aside.getBalance()
                     new Create('expense');
                 }
             },
@@ -130,7 +140,8 @@ export class Router {
                 rout : '#/expense/edit',
                 style : 'styles/editor.css',
                 template : 'templates/editor.html',
-                load : () => {
+                load : async () => {
+                    await this.aside.getBalance()
                     new Edit('expense')
                 }
             },
@@ -159,9 +170,9 @@ export class Router {
         let motherElement = document.getElementById(idName);
         if (!motherElement) {
             this.bodyElement.innerHTML = await fetch('templates/aside.html').then(resp => resp.text());
-            new Aside()
+            this.aside = new Aside();
             motherElement = document.getElementById(idName);
-        }
+        } 
         return motherElement;
     }
 
