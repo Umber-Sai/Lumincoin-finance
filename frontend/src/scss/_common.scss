@@ -65,6 +65,10 @@ body {
             color: #fff;
         }
     }
+    &.disabled {
+        background-color: $line-color;
+        cursor: not-allowed;
+    }
 }
 
 h1.title {

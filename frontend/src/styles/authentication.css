@@ -54,6 +54,10 @@ body {
   background-color: #6C757D;
   color: #fff;
 }
+.btn.disabled {
+  background-color: #D9D9D9;
+  cursor: not-allowed;
+}
 
 h1.title {
   color: #052C65;

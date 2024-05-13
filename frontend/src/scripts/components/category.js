@@ -1,4 +1,6 @@
-import { Data } from "../../../../backendData";
+
+import { Config } from "../config";
+import { CustomHttp } from "../services/custom-http.js";
 
 
 
@@ -13,10 +15,10 @@ export class Category {
             linkToEdit : '#/income/edit?'
         }
 
-        this.expenses = {
+        this.expense = {
             title : 'Расходы',
-            linkToCreate : '#/expenses/create',
-            linkToEdit : '#/expenses/edit?'
+            linkToCreate : '#/expense/create',
+            linkToEdit : '#/expense/edit?'
         }
 
         this.init(type);
@@ -28,11 +30,11 @@ export class Category {
         this.addCreateButton(type);
     }
 
-    fillCategoryes (type) {
-        const categoryes = Data[type]; //request to backend
+    async fillCategoryes (type) {
+        const categoryes = await CustomHttp.request(Config.host + 'categories/' + type);
 
         categoryes.forEach(category => {
-            new Card(category, this[type], this.cardsElement);
+            new Card(category, this[type], this.cardsElement, type);
         });
     }
 
@@ -49,8 +51,10 @@ export class Category {
 
 
 class Card {
-    constructor (name, props, motherElement) {
-        this.name = name;
+    constructor (data, props, motherElement, type) {
+        this.type = type;
+        this.name = data.title;
+        this.id = data.id
         this.props = props;
         this.motherElement = motherElement;
 
@@ -76,7 +80,7 @@ class Card {
         const editBtnElement = document.createElement('a');
         editBtnElement.className = 'btn blue';
         editBtnElement.innerText = 'Редактировать';
-        editBtnElement.setAttribute('href', this.props.linkToEdit + this.name);
+        editBtnElement.setAttribute('href', this.props.linkToEdit + this.id);
 
         const deleteBtnElement = document.createElement('button');
         deleteBtnElement.className = 'btn red';
@@ -96,6 +100,7 @@ class Card {
         this.popupElement.style.display = 'flex';
 
         this.btnYesElement.onclick = () => {
+            CustomHttp.request(Config.host + 'categories/' + this.type + '/' + this.id, 'DELETE');
             this.popupElement.style.display = 'none';
             this.motherElement.removeChild(this.cardElement);
         }

@@ -1,6 +1,6 @@
 import { Config } from "../config";
-import { Auth } from "../services/auth";
-import { CustomHttp } from "../services/custom-http";
+import { Auth } from "../services/auth.js";
+import { CustomHttp } from "../services/custom-http.js";
 
 export class Form {
     constructor(type) {
@@ -35,7 +35,7 @@ export class Form {
                 name : 'password',
                 icon : 'static/img/authentication/lock.svg',
                 placeholder : 'Пароль',
-                type : 'text',
+                type : 'password',
                 regex: /(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
             },
             {
@@ -78,7 +78,7 @@ export class Form {
             if (!formValid) return 
             try {
                 const name = this.inputs.find(item => item.name === 'fullName').element.inputElement.value.split(' ');
-                const response = await CustomHttp.request(Config.host + '/signup', "Post", {
+                const response = await CustomHttp.request(Config.host + 'signup', "Post", {
                     "name": name[1],
                     "lastName": name[0],
                     "email": this.inputs.find(item => item.name === 'email').element.inputElement.value,
@@ -100,21 +100,33 @@ export class Form {
             }
         }
 
-        const url = Config.host + '/login';
-        const response = await CustomHttp.request(url, 'Post', {
-            "email": this.inputs.find(item => item.name === 'email').element.inputElement.value,
-            "password": this.inputs.find(item => item.name === 'password').element.inputElement.value,
-            "rememberMe": this.checkbox.checked
-        });
-        if(response.error) {
-            console.log(response);
-            alert('Неверный логин или пароль')
-            return;
-        }
-        Auth.setUserInfo(response.user)
-        Auth.setTokens(response.tokens)
+        let formValid = true;
+        this.inputs.forEach(input => {
+            input.element.validationCheck() ? {} : formValid = false;
+        })
+        if (!formValid) return 
 
-        location.href = '#/main';
+        try {
+            const response = await CustomHttp.request(Config.host + 'login', 'Post', {
+                "email": this.inputs.find(item => item.name === 'email').element.inputElement.value,
+                "password": this.inputs.find(item => item.name === 'password').element.inputElement.value,
+                "rememberMe": this.checkbox.checked
+            });
+            
+            if(response.error) {
+                alert('Неверный логин или пароль')
+                throw new Error(response.message)
+            }
+            Auth.setUserInfo(response.user)
+            Auth.setTokens(response.tokens)
+    
+            location.href = '#/main';
+            
+        } catch (error) {
+            console.error(error);
+            return
+        }
+
     }
 
     fillPage (type) {

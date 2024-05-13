@@ -147,6 +147,7 @@
             
 
             .balance {
+                cursor: pointer;
                 font-size: 14px;
                 font-weight: 500;
                 span {
@@ -156,6 +157,7 @@
         }
 
         .user {
+            cursor: pointer;
             padding: 20px;
             display: flex;
             align-items: center;
@@ -172,5 +174,32 @@
         box-sizing: border-box;
         min-height: 100vh;
         flex: 1 1 auto;
+    }
+}
+
+.popup {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    background-color: #0000005f;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    .container {
+        height: max-content;
+        width: 400px;
+        input {
+            background-color: transparent;
+            border-color: transparent;
+            border-bottom: 1px solid $gray;
+            outline: none;
+            width: 10ch;
+        }
+        .popup_actions {
+            margin-top: 15px;
+        }
     }
 }
