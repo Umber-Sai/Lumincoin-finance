@@ -144,10 +144,11 @@ h2.title {
 .window .aside .navbar ul {
   list-style: none;
 }
-.window .aside .navbar ul li > a {
+.window .aside .navbar ul li > label {
   height: 40px;
   width: 100%;
   border-radius: 5px;
+  border: 1px solid transparent;
   cursor: pointer;
   color: #052C65;
   font-size: 14px;
@@ -159,14 +160,7 @@ h2.title {
   padding: 12px 5px 12px 16px;
   box-sizing: border-box;
   position: relative;
-}
-.window .aside .navbar ul li > a:focus {
-  background-color: #0D6EFD;
-  border-color: #0D6EFD;
-  color: #fff;
-}
-.window .aside .navbar ul li > a:focus path {
-  fill: #fff;
+  transition: all 0.5s;
 }
 .window .aside .navbar ul li .category {
   height: 40px;
@@ -175,8 +169,9 @@ h2.title {
   border: 1px solid transparent;
   overflow: hidden;
   transition: all 0.2s;
+  box-sizing: border-box;
 }
-.window .aside .navbar ul li .category label {
+.window .aside .navbar ul li .category .category_label {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -189,10 +184,10 @@ h2.title {
   font-size: 14px;
   font-weight: 500;
 }
-.window .aside .navbar ul li .category label svg {
+.window .aside .navbar ul li .category .category_label svg {
   transition: all 0.5s;
 }
-.window .aside .navbar ul li .category > a {
+.window .aside .navbar ul li .category .label_button {
   height: 40px;
   width: 100%;
   cursor: pointer;
@@ -204,32 +199,33 @@ h2.title {
   text-decoration: none;
   padding: 12px 5px 12px 16px;
   box-sizing: border-box;
+  transition: all 0.5s;
 }
-.window .aside .navbar ul li .category > a:focus {
-  background-color: #0D6EFD;
-  border-color: #0D6EFD;
-  color: #fff;
-}
-.window .aside .navbar ul li .category > a:focus path {
-  fill: #fff;
-}
-.window .aside .navbar ul li > input {
+.window .aside .navbar ul li input {
   position: absolute;
   z-index: -1;
   display: none;
 }
-.window .aside .navbar ul li > input:checked + div {
+.window .aside .navbar ul li input:checked + .category {
   height: 120px;
   border: 1px solid #0D6EFD;
 }
-.window .aside .navbar ul li > input:checked + div label {
+.window .aside .navbar ul li input:checked + .category > .category_label {
   background-color: #0D6EFD;
   color: #fff;
 }
-.window .aside .navbar ul li > input:checked + div label svg {
+.window .aside .navbar ul li input:checked + .category > .category_label svg {
   transform: rotate(90deg);
 }
-.window .aside .navbar ul li > input:checked + div label svg path {
+.window .aside .navbar ul li input:checked + .category > .category_label svg path {
+  fill: #fff;
+}
+.window .aside .navbar ul li input:checked + label {
+  background-color: #0D6EFD;
+  border-color: #0D6EFD;
+  color: #fff !important;
+}
+.window .aside .navbar ul li input:checked + label path {
   fill: #fff;
 }
 .window .aside .navbar .balance {

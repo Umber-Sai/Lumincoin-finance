@@ -42,10 +42,11 @@
             ul {
                 list-style: none;
                 li{
-                    &>a {
+                    &>label {
                         height: 40px;
                         width: 100%;
                         border-radius: 5px;
+                        border: 1px solid transparent;
                         cursor: pointer;
                         
                         color: $titel-color;
@@ -59,17 +60,18 @@
                         padding: 12px 5px 12px 16px;
                         box-sizing: border-box;
                         position: relative;
-                        
-                        &:focus {
-                            background-color: $blue;
-                            border-color: $blue;
-                            color: #fff;
-                            
-                            path {
-                                fill: #fff
-                            }
-                        }
+
+                        transition: all .5s;
                     }
+                    // input:checked+label {
+                    //     background-color: $blue;
+                    //     border-color: $blue;
+                    //     color: #fff;
+
+                    //     path {
+                    //         fill: #fff
+                    //     }
+                    // }
                     .category {
                         height: 40px;
                         width: 100%;
@@ -77,8 +79,9 @@
                         border: 1px solid transparent;
                         overflow: hidden;
                         transition: all .2s;
+                        box-sizing: border-box;
 
-                        label {
+                        .category_label {
                             display: flex;
                             align-items: center;
                             justify-content: space-between;
@@ -96,7 +99,7 @@
                                 transition: all .5s;
                             }
                         }
-                        &>a {
+                        .label_button {
                             height: 40px;
                             width: 100%;
                             cursor: pointer;
@@ -111,26 +114,18 @@
                             padding: 12px 5px 12px 16px;
                             box-sizing: border-box;
 
-                            &:focus {
-                                background-color: $blue;
-                                border-color: $blue;
-                                color: #fff;
-
-                                path {
-                                    fill: #fff
-                                }
-                            }
+                            transition: all .5s;
                         }
                     }
 
-                    &>input {
+                    input {
                         position: absolute;
                         z-index: -1;
                         display: none;
-                        &:checked+div {
+                        &:checked+.category {
                             height: 120px;
                             border: 1px solid $blue;
-                            label {
+                            &>.category_label {
                                 background-color: $blue;
                                 color: #fff;
                                 svg{
@@ -139,6 +134,15 @@
                                         fill: #fff
                                     }
                                 }
+                            }
+                        }
+                        &:checked+label {
+                            background-color: $blue;
+                            border-color: $blue;
+                            color: #fff !important;
+    
+                            path {
+                                fill: #fff
                             }
                         }
                     }

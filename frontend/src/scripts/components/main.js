@@ -22,7 +22,7 @@ export class Main {
 
 
       this.incomeChart = new Chart(
-        document.getElementById('income'),
+        document.getElementById('income_canvas'),
         {
           type: 'pie',
           data: {
@@ -45,7 +45,7 @@ export class Main {
       }
 
       this.expenseChart = new Chart(
-        document.getElementById('expense'),
+        document.getElementById('expense_canvas'),
         {
           type: 'pie',
           data: {

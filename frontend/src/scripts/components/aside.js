@@ -11,6 +11,14 @@ export class Aside {
         this.userElement = document.getElementById('user')
         this.userPopup = document.getElementById('user_popup')
         this.userFullName = document.getElementById('userName');
+        this.navbarButtons = document.getElementsByName('navbar');
+
+        this.navbarButtons.forEach(element => {
+            element.onclick = (event) => {
+                window.location.href = '#/' + event.target.id;
+                console.log(event.target.id)
+            }
+        })
 
         this.fillAside();
 
@@ -51,13 +59,6 @@ export class Aside {
     }
 
     fillAside () {
-        // let observer = new MutationObserver(() => {
-        //     this.getBalance();
-        // })
-        // observer.observe(this.contentElement, {
-        //     childList: true,
-        //     subtree: true
-        // });
         this.getBalance();
 
         const userInfo = Auth.getUserInfo();
