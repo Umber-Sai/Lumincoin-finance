@@ -1,88 +1,108 @@
 
 import { Config } from "../config";
 import { CustomHttp } from "../services/custom-http.js";
+import { CardInfo, CategoryResponseType, CategorySettings, CategoryType } from "../types/category.type";
+import { DefaultResponseType } from "../types/default-response.type";
 
 
 
 export class Category {
-    constructor (type) {
-        this.titleElement = document.getElementById('title');
-        this.cardsElement = document.getElementById('cards');
 
-        this.income = {
-            title : 'Доходы',
-            linkToCreate : '#/income/create',
-            linkToEdit : '#/income/edit?'
-        }
+    readonly titleElement: HTMLElement | null = document.getElementById('title');
+    readonly cardsElement: HTMLElement | null = document.getElementById('cards');
+    readonly type: CategoryType;
 
-        this.expense = {
-            title : 'Расходы',
-            linkToCreate : '#/expense/create',
-            linkToEdit : '#/expense/edit?'
-        }
-
-        this.init(type);
+    readonly income: CategorySettings = {
+        title: 'Доходы',
+        linkToCreate: '#/income/create',
+        linkToEdit: '#/income/edit?'
     }
 
-    init(type) {
-        this.titleElement.innerText = this[type].title;
-        this.fillCategoryes(type)
-        this.addCreateButton(type);
+    readonly expense: CategorySettings = {
+        title : 'Расходы',
+        linkToCreate : '#/expense/create',
+        linkToEdit : '#/expense/edit?'
     }
 
-    async fillCategoryes (type) {
-        const categoryes = await CustomHttp.request(Config.host + 'categories/' + type);
+    constructor (type: CategoryType) {
+        this.type = type;
 
-        categoryes.forEach(category => {
-            new Card(category, this[type], this.cardsElement, type);
+
+        this.init();
+    }
+
+    private init(): void {
+        if(this.titleElement) {
+            this.titleElement.innerText = this[this.type].title;
+        }
+
+        if(!this.cardsElement) throw new Error('Cards element not found');
+
+        this.fillCategoryes()
+        this.addCreateButton();
+    }
+
+    private async fillCategoryes (): Promise<void> {
+        const categoryes: DefaultResponseType | CategoryResponseType = await CustomHttp.request(Config.host + 'categories/' + this.type);
+
+        (categoryes as CategoryResponseType).forEach((category: CardInfo) => {
+            new Card(category, this[this.type].linkToEdit, this.cardsElement!, this.type);
         });
     }
 
-    addCreateButton (type) {
+    private addCreateButton (): void {
         const btnElement = document.createElement('a')
         btnElement.className = 'add-card';
         btnElement.innerText = '+'
-        btnElement.setAttribute('href', this[type].linkToCreate);
+        btnElement.setAttribute('href', this[this.type].linkToCreate);
 
-        this.cardsElement.appendChild(btnElement)
+        this.cardsElement!.appendChild(btnElement)
     }
 }
 
 
 
 class Card {
-    constructor (data, props, motherElement, type) {
+
+    readonly type: CategoryType;
+    readonly name: string;
+    readonly id: number;
+    readonly link: string;
+    readonly motherElement: HTMLElement;
+
+    readonly popupElement: HTMLElement | null = document.getElementById('popup');
+    readonly btnYesElement: HTMLElement | null = document.getElementById('btnYes');
+    readonly btnNoElement: HTMLElement | null =  document.getElementById('btnNo');
+
+    private cardElement: HTMLElement = this.createElement();
+
+    constructor (data: CardInfo, link: string, motherElement: HTMLElement, type: CategoryType) {
         this.type = type;
         this.name = data.title;
         this.id = data.id
-        this.props = props;
+        this.link = link;
         this.motherElement = motherElement;
 
-        this.popupElement = document.getElementById('popup');
-        this.btnYesElement = document.getElementById('btnYes');
-        this.btnNoElement = document.getElementById('btnNo');
-
-        this.cardElement = this.createElement();
         this.motherElement.appendChild(this.cardElement);
     }
 
     createElement () {
-        const cardElement = document.createElement('div');
+        const cardElement: HTMLElement = document.createElement('div');
         cardElement.className = 'card';
 
-        const titleElement = document.createElement('h2');
+        const titleElement: HTMLElement = document.createElement('h2');
         titleElement.className = 'title';
         titleElement.innerText = this.name;
 
-        const actionsElement = document.createElement('div');
+        const actionsElement: HTMLElement = document.createElement('div');
         actionsElement.className = 'card__actions';
 
-        const editBtnElement = document.createElement('a');
+        const editBtnElement: HTMLElement = document.createElement('a');
         editBtnElement.className = 'btn blue';
         editBtnElement.innerText = 'Редактировать';
-        editBtnElement.setAttribute('href', this.props.linkToEdit + this.id);
+        editBtnElement.setAttribute('href', this.link + this.id);
 
-        const deleteBtnElement = document.createElement('button');
+        const deleteBtnElement: HTMLButtonElement = document.createElement('button');
         deleteBtnElement.className = 'btn red';
         deleteBtnElement.innerText = 'Удалить';
         deleteBtnElement.addEventListener('click', this.deleteBtnProcess.bind(this));
@@ -96,18 +116,25 @@ class Card {
         return cardElement
     }
 
-    deleteBtnProcess () {
-        this.popupElement.style.display = 'flex';
+    private deleteBtnProcess (): void {
+        if(this.popupElement) {
+            this.popupElement.style.display = 'flex';
 
-        this.btnYesElement.onclick = () => {
-            CustomHttp.request(Config.host + 'categories/' + this.type + '/' + this.id, 'DELETE');
-            this.popupElement.style.display = 'none';
-            this.motherElement.removeChild(this.cardElement);
-        }
+            if(this.btnYesElement) {
+                this.btnYesElement.onclick = () => {
+                    CustomHttp.request(Config.host + 'categories/' + this.type + '/' + this.id, 'DELETE');
+                    this.popupElement!.style.display = 'none';
+                    this.motherElement.removeChild(this.cardElement);
+                }
+            } else throw new Error('Confirm button not found');
+    
+            if(this.btnNoElement) {
+                this.btnNoElement.onclick = () => {
+                    this.popupElement!.style.display = 'none';
+                }
+            } else throw new Error('Decline button not found');
 
-        this.btnNoElement.onclick = () => {
-            this.popupElement.style.display = 'none';
-        }
 
+        } else throw new Error('Popup not found')
     }
 }

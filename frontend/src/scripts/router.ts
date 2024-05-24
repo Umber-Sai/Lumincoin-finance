@@ -6,6 +6,7 @@ import { Form } from "./components/form";
 import { Main } from "./components/main";
 import { Transactions } from "./components/transactions";
 import { Config } from "./config";
+import { FormTypes } from "./types/form.type";
 
 
 export class Router {
@@ -26,7 +27,7 @@ export class Router {
                 style : 'styles/authentication.css',
                 template : 'templates/authentication.html',
                 load : () => {
-                    new Form('login');
+                    new Form(FormTypes.login);
                 }
             },
             {
@@ -35,7 +36,7 @@ export class Router {
                 style : 'styles/authentication.css',
                 template : 'templates/authentication.html',
                 load : () => {
-                    new Form('signup')
+                    new Form(FormTypes.signup)
                 }
             },
         ]

@@ -1,49 +1,57 @@
 import { Config } from "../config";
 import { CustomHttp } from "../services/custom-http";
+import { DefaultResponseType } from "../types/default-response.type";
+import { ERT, EditResponseType, EditorInputPropsType, EditorInputsType, EditorSelectOptionsType, EditorSelectType, EditorTypeSettings, EditorTypes } from "../types/editor.type";
+import { Input } from "./editor-components/input";
+import { Select } from "./editor-components/select";
 
 class Common {
-    constructor (type) {
+
+    readonly type : EditorTypes;
+    readonly titleElement : HTMLElement | null = document.getElementById('title');
+    readonly greenBtnElement : HTMLElement | null =  document.getElementById('greenBtn');
+    readonly redBtnElement : HTMLElement | null = document.getElementById('redBtn');
+    readonly formElement : HTMLElement | null = document.getElementById('form');
+    private selectElements: Array<Select> = [];
+    public inputElements: Array<Input> = [];
+
+    private inputs: EditorInputsType = {
+        income : [{p : 'Название...', id : ERT.title, type : 'text'}],
+        expense : [{p : 'Название...', id : ERT.title, type : 'text'}],
+        transactions : [
+            {p : 'Сумма в $...', id : ERT.amount, type : 'number'},
+            {p : 'Дата...', id : ERT.date, type : 'date'},
+            {p : 'Комментарий...', id : ERT.comment, type : 'text'},
+        ],
+    }
+
+    public api: EditorTypeSettings = {
+        income : 'categories/income/',
+        expense : 'categories/expense/',
+        transactions : 'operations/'
+    }
+
+
+    constructor (type: EditorTypes) {
         this.type = type;
-        this.titleElement = document.getElementById('title')
-        this.greenBtnElement = document.getElementById('greenBtn');
-        this.redBtnElement = document.getElementById('redBtn');
-        this.formElement = document.getElementById('form');
-        this.selectElements = [];
-        this.inputElements = [];
-
-        this.inputs = {
-            income : [{p : 'Название...', id : 'title', type : 'text'}],
-            expense : [{p : 'Название...', id : 'title', type : 'text'}],
-            transactions : [
-                {p : 'Сумма в $...', id : 'amount', type : 'number'},
-                {p : 'Дата...', id : 'date', type : 'date'},
-                {p : 'Комментарий...', id : 'comment', type : 'text'},
-            ],
-        }
-
-        this.api = {
-            income : 'categories/income/',
-            expense : 'categories/expense/',
-            transactions : 'operations/'
-        }
 
         this.createInputs();
 
     }
 
-    createInputs () {
-        this.inputs[this.type].forEach(input => {
-            const sample = new Input(input.p, input.type, input.id);
+    private createInputs (): void {
+        this.inputs[this.type].forEach((input : EditorInputPropsType) => {
+            const sample: Input = new Input(input.p, input.type, input.id);
             this.inputElements.push(sample)
         })
     }
 
-    async createSelects(selectedType, selectedCategory = null) {
-        const typeOptions = [
+    public async createSelects(selectedType: string, selectedCategory: string | null = null): Promise<void> {
+        const typeOptions: Array<EditorSelectOptionsType> = [
             { id: 'expense', title: 'расход' },
             { id: 'income', title: 'доход' }
         ]
-        const selectElement = new Select(typeOptions, selectedType, 'type');
+        const selectElement: Select = new Select(typeOptions, selectedType, EditorSelectType.type);
         selectElement.element.addEventListener('change', () => {
             this.changeCategoryOptions(selectElement.element.value)
         })
@@ -52,201 +60,168 @@ class Common {
         await this.createCategorySelect(selectedType, selectedCategory)
     }
 
-    async changeCategoryOptions(selectedType) {
-        const options = await this.getCategoryes(selectedType);
-        this.selectElements[1].fillOptions(options)
+    private async changeCategoryOptions(selectedType: string): Promise<void> {
+        const options: Array<EditorSelectOptionsType> | undefined= await this.getCategoryes(selectedType);
+        if(!options) throw new Error ('Category options undefined');
+        this.selectElements[1].fillOptions(options);
     }
 
-    async createCategorySelect (selectedType, selectedCategory = null) {
-        const options = await this.getCategoryes(selectedType);
-        const selectElement = new Select(options, selectedCategory, 'category_id');
+    private async createCategorySelect (selectedType: string, selectedCategory: string | null = null): Promise<void> {
+        const options: EditorSelectOptionsType[] | undefined = await this.getCategoryes(selectedType);
+        if(!options) throw new Error ('Category options undefined');
+        const selectElement: Select = new Select(options, selectedCategory, EditorSelectType.category_id);
         this.selectElements.push(selectElement);
     }
 
-    async getCategoryes(type) {
-        try {
-            const categoryes = await CustomHttp.request(Config.host + 'categories/' + type);
-            if(categoryes) return categoryes;
-            throw new Error(categoryes.error)
-        } catch (error) {
-            console.error(error)
-        }
+    private async getCategoryes(type: string): Promise<EditorSelectOptionsType[] | undefined>{
+        const categoryes: DefaultResponseType | EditorSelectOptionsType[] = await CustomHttp.request(Config.host + 'categories/' + type);
+
+        if(categoryes as DefaultResponseType) return;
+        return categoryes as EditorSelectOptionsType[];
     }
 
-    fillForm () {
+    public fillForm ():void {
         this.selectElements.forEach(sample => {
-            this.formElement.appendChild(sample.element);
+            this.formElement?.appendChild(sample.element);
         })
         this.inputElements.forEach(sample => {
-            this.formElement.appendChild(sample.element);
+            this.formElement?.appendChild(sample.element);
         })
     }
 
-    collectBody() {
-        let body = {}
-        this.inputElements.forEach(sample => {
-            const val = sample.element.value;
-            if(isNaN(val)) {
-                body[sample.id] = sample.element.value
-            } else {
-                body[sample.id] = parseInt(sample.element.value);
-            }
-            // body[sample.id] = sample.element.value
+
+    public collectBody() {
+        let body: {[key: string] : string | number} = {}
+        this.inputElements.forEach((sample: Input) => {
+            const val:string = sample.element.value;
+            body[sample.id] = Number(val)? parseInt(val) : val;
         })
-        this.selectElements.forEach(sample => {
-            const val = sample.element.value;
-            if(isNaN(val)) {
-                body[sample.id] = sample.element.value
-            } else {
-                body[sample.id] = parseInt(sample.element.value);
-            }
-            // if(sample.id === 'category_id') {
-            //     body[sample.id] = parseInt(sample.element.value);
-            // } else {
-            //     body[sample.id] = sample.element.value
-            // }
+        this.selectElements.forEach((sample: Select) => {
+            const val: string = sample.element.value;
+            body[sample.id] = Number(val)? parseInt(val) : val;
         });
         return body;
     }
 }
 
 
-class Select {
-    constructor (options, selected = null, id) {
-        this.id = id
-        this.element = document.createElement('select');
-        this.fillOptions(options, selected)
-    }
 
-    fillOptions(options, selected = null) {
-        this.element.innerHTML = ''
-        options.forEach(option => {
-            const selectOption = document.createElement('option');
-            selectOption.setAttribute('value', option.id);
-            selectOption.innerText = option.title;
 
-            if (option.id === selected || option.title === selected) selectOption.selected = 'selected';
 
-            this.element.appendChild(selectOption);
-        });
-    }
-}
-
-class Input {
-    constructor (placeholder, type, id) {
-        this.id = id;
-        this.element = document.createElement('input');
-        this.element.setAttribute('type', type);
-        this.element.setAttribute('placeholder', placeholder);
-
-        this.element.addEventListener('focus', () => {
-            this.element.classList.remove('noValid')
-        })
-    }
-
-    valid () {
-        // if(this.id === 'comment') return true;
-        if(this.element.value) {
-            return true;
-        }
-        this.element.classList.add('noValid')
-        return false;
-    }
-}
 
 
 
 export class Create extends Common {
-    constructor (type) {
+
+    private title: EditorTypeSettings = {
+        income : 'Создание категории доходов',
+        expense : 'Создание категории расходов',
+        transactions : 'Создание дохода/расхода'
+    }
+
+    constructor (type: EditorTypes) {
         super (type);
 
-        this.title = {
-            income : 'Создание категории доходов',
-            expense : 'Создание категории расходов',
-            transactions : 'Создание дохода/расхода'
-        }
-
-        this.titleElement.innerText = this.title[type];
-        this.greenBtnElement.innerText = 'Создать';
-
-        if(type === 'transactions') {
+        if(type === EditorTypes.transactions) {
             this.fillAsTransactions();
         } else {
             this.fillForm();
         }
 
-        this.greenBtnElement.addEventListener('click', () => {
-            let valid = true
-            this.inputElements.forEach(input => {
-                if(!input.valid()) valid = false;
-            });
+        if(this.titleElement) {
+            this.titleElement.innerText = this.title[type];
+        }
 
-            if(!valid) return;
-            const body = this.collectBody();
+        if(this.greenBtnElement) {
+            this.greenBtnElement.innerText = 'Создать';
 
-            CustomHttp.request(Config.host + this.api[type], 'POST', body);
-            window.history.back();
-        })
+            this.greenBtnElement.addEventListener('click', () => {
+                let valid: boolean = true
+                this.inputElements.forEach(input => {
+                    if(!input.valid()) valid = false;
+                });
+    
+                if(!valid) return;
+                const body = this.collectBody();
+    
+                CustomHttp.request(Config.host + this.api[type], 'POST', body);
+                window.history.back();
+            })
+        } else {
+            throw new Error('Confirm button not found')
+        }        
     }
 
-    async fillAsTransactions () {
-        const selectedType = window.location.hash.split('?')[1];
+    private async fillAsTransactions (): Promise<void> {
+        const selectedType: string = window.location.hash.split('?')[1];
         await this.createSelects(selectedType);
         this.fillForm()
     }
 }
 
+
+
 export class Edit extends Common {
-    constructor (type) {
-        super (type);
-        
-        this.title = {
-            income : 'Редактирование категории доходов',
-            expense : 'Редактирование категории расходов',
-            transactions : 'Редактирование дохода/расхода'
-        }
-        
-        this.titleElement.innerText = this.title[type];
-        this.greenBtnElement.innerText = 'Сохранить';
-        
-        this.id = decodeURIComponent(window.location.href).split('?')[1];
 
-        this.getItemValues()
+    private id: string = decodeURIComponent(window.location.href).split('?')[1];
 
-        this.greenBtnElement.addEventListener('click', () => {
-            let valid = true
-            this.inputElements.forEach(input => {
-                if(!input.valid()) valid = false
-            });
 
-            if(!valid) return
-            const body = this.collectBody();
-
-            CustomHttp.request(Config.host + this.api[type] + this.id, 'PUT', body);
-            window.history.back();
-        })
+    private title: EditorTypeSettings = {
+        income : 'Редактирование категории доходов',
+        expense : 'Редактирование категории расходов',
+        transactions : 'Редактирование дохода/расхода'
     }
 
-    async getItemValues () {
-        let response = null;
+    constructor (type: EditorTypes) {
+        super (type);
+        
+        if(this.titleElement) {
+            this.titleElement.innerText = this.title[type];
+        }
+
+        if(this.greenBtnElement) {
+            this.greenBtnElement.innerText = 'Сохранить';
+            this.greenBtnElement.addEventListener('click', () => {
+                let valid: boolean = true
+                this.inputElements.forEach(input => {
+                    if(!input.valid()) valid = false
+                });
+    
+                if(!valid) return
+                const body: {[key: string]: string | number} = this.collectBody();
+    
+                CustomHttp.request(Config.host + this.api[type] + this.id, 'PUT', body);
+                window.history.back();
+            });
+        } else {
+            throw new Error('Confirm button not found');
+        }
+        this.getItemValues()
+    }
+
+    private async getItemValues (): Promise<void> {
         try {
-            const result = await CustomHttp.request(Config.host + this.api[this.type] + this.id);
-            if(!result) throw new Error(result.error);
-            response = result
+            const result: DefaultResponseType | EditResponseType = await CustomHttp.request(Config.host + this.api[this.type] + this.id);
+            if(result as DefaultResponseType) throw new Error((result as DefaultResponseType).message);
+            if(result as EditResponseType) {
+                this.fillForm();
+                this.insertValues(result as EditResponseType);
+            }
+
+            if((result as EditResponseType).type) await this.createSelects((result as EditResponseType).type!, (result as EditResponseType).category);
+
         } catch (error) {
             console.error(error)
             window.history.back();
         }
-        if(response.type) await this.createSelects(response.type, response.category);
-        this.fillForm();
-        this.insertValues(response);
+        
     }
 
-    insertValues(values) {
-        this.inputElements.forEach(item => {
-            const val = values[item.id]
+    private insertValues(values: EditResponseType): void {
+        this.inputElements.forEach((item: Input) => {
+            const val: string | number | undefined = values[item.id]
             if (val) {
-                item.element.value = val;
+                item.element.value = val.toString();
             } else {}
         })
     }

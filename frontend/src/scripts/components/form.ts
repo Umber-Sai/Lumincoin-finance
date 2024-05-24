@@ -76,19 +76,19 @@ export class Form {
 
     async processForm () {
         if (this.type === 'signup') {
-            let formValid = true;
-            this.inputs.forEach(input => {
-                input.element.validationCheck() ? {} : formValid = false;
+            let formValid: boolean = true;
+            this.inputs.forEach((input: FormInputType) => {
+                input.element!.validationCheck() ? {} : formValid = false;
             })
             if (!formValid) return 
             try {
-                const name = this.inputs.find(item => item.name === 'fullName').element.inputElement.value.split(' ');
+                const name = this.inputs.find((item: FormInputType) => item.name === FormInputNames.fullName)!.element!.inputElement.value.split(' ');
                 const response = await CustomHttp.request(Config.host + 'signup', "Post", {
                     "name": name[1],
                     "lastName": name[0],
-                    "email": this.inputs.find(item => item.name === 'email').element.inputElement.value,
-                    "password": this.inputs.find(item => item.name === 'password').element.inputElement.value,
-                    "passwordRepeat": this.inputs.find(item => item.name === 'passwordRepeat').element.inputElement.value
+                    "email": this.inputs.find(item => item.name === FormInputNames.email)!.element!.inputElement.value,
+                    "password": this.inputs.find(item => item.name === FormInputNames.password)!.element!.inputElement.value,
+                    "passwordRepeat": this.inputs.find(item => item.name === FormInputNames.passwordRepeat)!.element!.inputElement.value
                 });
                 if (response.error) {
                     throw new Error(response.message)
@@ -105,16 +105,16 @@ export class Form {
             }
         }
 
-        let formValid = true;
-        this.inputs.forEach(input => {
-            input.element.validationCheck() ? {} : formValid = false;
+        let formValid: boolean = true;
+        this.inputs.forEach((input: FormInputType) => {
+            input.element!.validationCheck() ? {} : formValid = false;
         })
         if (!formValid) return 
 
         try {
             const response = await CustomHttp.request(Config.host + 'login', 'Post', {
-                "email": this.inputs.find(item => item.name === 'email').element.inputElement.value,
-                "password": this.inputs.find(item => item.name === 'password').element.inputElement.value,
+                "email": this.inputs.find(item => item.name === FormInputNames.email)!.element!.inputElement.value,
+                "password": this.inputs.find(item => item.name === FormInputNames.password)!.element!.inputElement.value,
                 "rememberMe": this.checkbox.checked
             });
             
