@@ -14,6 +14,6 @@ export type TokensType = {
 
 export type UserType = {
     name: string,
-    lastname: string,
+    lastName: string,
     id: number
 }

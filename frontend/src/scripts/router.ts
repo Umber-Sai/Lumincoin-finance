@@ -7,6 +7,8 @@ import { Main } from "./components/main";
 import { Transactions } from "./components/transactions";
 import { Config } from "./config";
 import { FormTypes } from "./types/form.type";
+import { EditorTypes } from "./types/editor.type";
+import { CategoryType } from "./types/category.type";
 
 
 export class Router {
@@ -71,7 +73,7 @@ export class Router {
                 template : 'templates/editor.html',
                 load : async () => {
                     await this.aside?.getBalance()
-                    new Create('transactions')
+                    new Create(EditorTypes.transactions)
                 }
             },
             {
@@ -81,7 +83,7 @@ export class Router {
                 template : 'templates/editor.html',
                 load : async () => {
                     await this.aside?.getBalance()
-                    new Edit ('transactions')
+                    new Edit (EditorTypes.transactions)
                 }
             },
 
@@ -93,7 +95,7 @@ export class Router {
                 template : 'templates/category.html',
                 load : async () => {
                     await this.aside?.getBalance()
-                    new Category('income');
+                    new Category(CategoryType.income);
                 }
             },
             {
@@ -103,7 +105,7 @@ export class Router {
                 template : 'templates/editor.html',
                 load : async () => {
                     await this.aside?.getBalance()
-                    new Create('income')
+                    new Create(EditorTypes.income)
                 }
             },
             {
@@ -113,7 +115,7 @@ export class Router {
                 template : 'templates/editor.html',
                 load : async () => {
                     await this.aside?.getBalance()
-                    new Edit('income')
+                    new Edit(EditorTypes.income)
                 }
             },
 
@@ -126,7 +128,7 @@ export class Router {
                 template : 'templates/category.html',
                 load : async () => {
                     await this.aside?.getBalance()
-                    new Category('expense');
+                    new Category(CategoryType.expense);
                 }
             },
             {
@@ -136,7 +138,7 @@ export class Router {
                 template : 'templates/editor.html',
                 load : async () => {
                     await this.aside?.getBalance()
-                    new Create('expense');
+                    new Create(EditorTypes.expense);
                 }
             },
             {
@@ -146,7 +148,7 @@ export class Router {
                 template : 'templates/editor.html',
                 load : async () => {
                     await this.aside?.getBalance()
-                    new Edit('expense')
+                    new Edit(EditorTypes.expense)
                 }
             },
         ]
