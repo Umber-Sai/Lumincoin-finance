@@ -1,22 +1,36 @@
+import { Input } from "../components/form";
 import { Config } from "../config";
 import { CustomHttp } from "../services/custom-http";
+import { DefaultResponseType } from "../types/default-response.type";
+import { TransactionInfoType } from "../types/transaction.type";
 
+type CallBack = {
+    (arg: Array<TransactionInfoType>): void;
+}
 export class Timebar {
-    constructor (cb) {
+
+    cb: CallBack;
+    inputs: Array<HTMLInputElement | null>
+
+    constructor (cb: CallBack) {
         this.cb = cb;
         this.inputs = [
-            document.getElementById('fromDate'),
-            document.getElementById('toDate')
-        ]
-        document.getElementsByName('date').forEach(button => {
+            document.getElementById('fromDate') as HTMLInputElement | null,
+            document.getElementById('toDate') as HTMLInputElement | null
+        ];
+        const dateButtons = document.getElementsByName('date') as NodeListOf<HTMLInputElement>;
+
+        dateButtons.forEach((button: HTMLInputElement) => {
             button.addEventListener('click', () => {
                 if (button.value === 'interval') {
                     this.intervalCheck()
                     this.inputs.forEach(item => {
-                        item.oninput = () => {
-                           this.intervalCheck()
-                        }
-                    })
+                        if(item) {
+                            item.oninput = () => {
+                               this.intervalCheck();
+                            }
+                        } 
+                    });
                 } else {
                     this.getTransactions(button.value)
                 }
@@ -26,27 +40,32 @@ export class Timebar {
         this.getTransactions('today')
     }
 
-    intervalCheck() {
-        const from = this.inputs[0].value;
-        const to = this.inputs[1].value;
-        if( from.length > 7 && to.length > 7) {
-            this.getTransactions('interval', from, to);
+    private intervalCheck(): void {
+        const from: string | undefined = this.inputs[0]?.value;
+        const to: string | undefined = this.inputs[1]?.value;
+        if(from && to) {
+            if(from.length > 7 && to.length > 7) {
+                this.getTransactions('interval', from, to);
+        }
         }
     }
 
 
-    async getTransactions (period, dateFrom = null, dateTo = null) {
-        let url = Config.host + 'operations?period=' + period;
+    private async getTransactions (period: string, dateFrom: string | null = null, dateTo: string | null = null): Promise<void> {
+        let url: string = Config.host + 'operations?period=' + period;
         if(dateFrom && dateTo) {
             url = url + '&dateFrom=' + dateFrom + '&dateTo=' + dateTo;
         }
 
-        const response = await CustomHttp.request(url);
+        const response: DefaultResponseType | Array<TransactionInfoType> = await CustomHttp.request(url);
 
-        if(response.length === 0) this.cb([])
-        response.sort(function (a, b) {
+        if(response as DefaultResponseType) {
+            this.cb([]);
+            return
+        }
+        (response as Array<TransactionInfoType>).sort(function (a, b) {
             return a.id - b.id;
         });
-        this.cb(response)
+        this.cb(response as Array<TransactionInfoType>)
     }
 }

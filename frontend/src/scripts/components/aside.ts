@@ -1,11 +1,10 @@
 import { Config } from "../config";
-import { Auth } from "../services/auth.js";
-import { CustomHttp } from "../services/custom-http.js";
+import { Auth } from "../services/auth";
+import { CustomHttp } from "../services/custom-http";
 import { UserType } from "../types/auth.type";
 import { BalanceResponseType } from "../types/balance-responcse.type";
 import { DefaultResponseType } from "../types/default-response.type";
 
-console.log('hello world')
 export class Aside {
 
     readonly balanceElement: HTMLElement | null = document.getElementById('balance');
@@ -15,18 +14,16 @@ export class Aside {
     readonly userElement: HTMLElement | null = document.getElementById('user')
     readonly userPopup: HTMLElement | null = document.getElementById('user_popup')
     readonly userFullName: HTMLElement | null = document.getElementById('userName');
-    readonly navbarButtons: NodeListOf<HTMLElement>| null = document.getElementsByName('navbar');
+    readonly navbarButtons = document.getElementsByName('navbar') as NodeListOf<HTMLButtonElement>;
 
 
     constructor () {
-        if(this.navbarButtons) {
-            this.navbarButtons.forEach((element: HTMLElement) => {
-                element.onclick = (event) => {
-                    window.location.href = '#/' + event.target.id;
-                    console.log(event.target.id)
-                }
-            })
-        }
+        this.navbarButtons.forEach((element: HTMLButtonElement) => {
+            element.onclick = (event) => {
+                window.location.href = '#/' + (event.target as HTMLButtonElement).id;
+                // console.log(event.target.id)
+            }
+        })
 
         this.fillAside();
 
@@ -36,7 +33,7 @@ export class Aside {
                     this.balancePopup.style.display = 'flex';
                 } else throw new Error('Balance popup not found');
 
-                const input: HTMLInputElement | null = document.getElementById('change_balance');
+                const input = document.getElementById('change_balance') as HTMLInputElement | null;
                 if(input) {
                     if(this.balanceStatusElement) {
                         input.value = this.balanceStatusElement.innerText

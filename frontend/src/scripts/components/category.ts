@@ -1,6 +1,6 @@
 
 import { Config } from "../config";
-import { CustomHttp } from "../services/custom-http.js";
+import { CustomHttp } from "../services/custom-http";
 import { CardInfo, CategoryResponseType, CategorySettings, CategoryType } from "../types/category.type";
 import { DefaultResponseType } from "../types/default-response.type";
 

@@ -1,6 +1,8 @@
 import { Config } from "../config";
-import { Auth } from "../services/auth.js";
-import { CustomHttp } from "../services/custom-http.js";
+import { Auth } from "../services/auth";
+import { CustomHttp } from "../services/custom-http";
+import { AuthType } from "../types/auth.type";
+import { DefaultResponseType } from "../types/default-response.type";
 import { FormTypeSettings, FormTypes } from "../types/form.type";
 import { FormInputNames, FormInputType } from "../types/from-input.type";
 
@@ -112,18 +114,18 @@ export class Form {
         if (!formValid) return 
 
         try {
-            const response = await CustomHttp.request(Config.host + 'login', 'Post', {
+            const response: DefaultResponseType | AuthType = await CustomHttp.request(Config.host + 'login', 'Post', {
                 "email": this.inputs.find(item => item.name === FormInputNames.email)!.element!.inputElement.value,
                 "password": this.inputs.find(item => item.name === FormInputNames.password)!.element!.inputElement.value,
                 "rememberMe": this.checkbox.checked
             });
             
-            if(response.error) {
+            if((response as DefaultResponseType).error) {
                 alert('Неверный логин или пароль')
-                throw new Error(response.message)
+                throw new Error((response as DefaultResponseType).message)
             }
-            Auth.setUserInfo(response.user)
-            Auth.setTokens(response.tokens)
+            Auth.setUserInfo((response as AuthType).user)
+            Auth.setTokens((response as AuthType).tokens)
     
             location.href = '#/main';
             
@@ -261,9 +263,9 @@ export class Input  {
         if(value.match(this.regex)) {
             return true;
         } else {  
-            const messageFor = {
-                'passwordRepeat' : 'Пароли не совпадают',
-                'fullName' : 'Введите Фамилию и Имя'
+            const messageFor: {[key: string]: string} = {
+                [FormInputNames.passwordRepeat] : 'Пароли не совпадают',
+                [FormInputNames.fullName] : 'Введите Фамилию и Имя'
             }
             this.errorElement.innerText = messageFor[this.name] ? messageFor[this.name] : 'Поле заполнено некорректно';;
             this.element.classList.add('noValid');

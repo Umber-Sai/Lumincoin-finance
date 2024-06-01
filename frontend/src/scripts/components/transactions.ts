@@ -63,12 +63,12 @@ class Transaction {
         rowElement.className = 'row';
 
         // const rowItems: Array<string> = ['id', 'type', 'category', 'amount', 'date', 'comment'];
-        const rowItems: Array<string> = [RowType.id, RowType.type];
+        const rowItems: Array<RowType> = [RowType.id, RowType.type, RowType.category, RowType.amount, RowType.date, RowType.comment];
         
-        rowItems.forEach((item) => {
+        rowItems.forEach((item: RowType) => {
             const element: HTMLElement = document.createElement('div');
             element.className = item;
-            element.innerText = this.data[RowType[item]]
+            element.innerText = this.data[item].toString()
             if(item === 'type') {
                 element.innerText = (this.data[item] === 'income'? 'доход' : 'расход');
                 element.classList.add((this.data[item] === 'income'? 'green' : 'red'));

@@ -1,13 +1,16 @@
+import { RowType } from "./row-item.type"
+
 export type TransactionInfoType = {
-    'id': number,
-    'type': string,
-    'category': string,
-    'amount': number,
-    'date': string, 
-    'comment': string 
+    [RowType.id]: number,
+    [RowType.type]: string,
+    [RowType.category]: string,
+    [RowType.amount]: number,
+    [RowType.date]: string, 
+    [RowType.comment]: string 
 }
 
 export type CompressedTransactions = {
     category: string,
     amount: number
 }
+
