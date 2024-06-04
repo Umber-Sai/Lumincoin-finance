@@ -202,7 +202,7 @@ export class Edit extends Common {
     private async getItemValues (): Promise<void> {
         try {
             const result: DefaultResponseType | EditResponseType = await CustomHttp.request(Config.host + this.api[this.type] + this.id);
-            if(result as DefaultResponseType) throw new Error((result as DefaultResponseType).message);
+            if((result as DefaultResponseType).error) throw new Error((result as DefaultResponseType).message);
             if(result as EditResponseType) {
                 this.fillForm();
                 this.insertValues(result as EditResponseType);

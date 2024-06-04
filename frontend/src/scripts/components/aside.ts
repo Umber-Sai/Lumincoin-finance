@@ -99,7 +99,7 @@ export class Aside {
     async getBalance() {
         try {
             const response: DefaultResponseType | BalanceResponseType = await CustomHttp.request(Config.host + 'balance');
-            if(response as DefaultResponseType) {
+            if((response as DefaultResponseType).error) {
                 throw new Error((response as DefaultResponseType).message)
             }
             if(this.balanceStatusElement) {

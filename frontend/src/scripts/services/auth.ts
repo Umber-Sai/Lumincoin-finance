@@ -15,7 +15,7 @@ export class Auth {
                     'Content-type': 'application/json',
                     'Accept': 'application/json',
                 },
-                body : JSON.stringify({"refreshToken" : refreshTocken})
+                body : JSON.stringify({refreshToken : refreshTocken})
             });
 
 
@@ -23,7 +23,7 @@ export class Auth {
                 const result: ReloginType = await response.json();
                 this.setTokens(result.tokens);
                 return true;
-            }
+            } 
         }
 
         window.location.href = '#/login'
@@ -32,7 +32,6 @@ export class Auth {
     }
 
     public static setUserInfo (userInfo: UserType): void {
-        console.log('set user info')
         localStorage.setItem(this.userInfo, JSON.stringify(userInfo));
     }
 

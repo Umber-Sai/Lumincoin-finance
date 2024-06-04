@@ -12,7 +12,7 @@ export class CustomHttp {
 
         const token: string | null = localStorage.getItem(Auth.accessTocken);
         if(token) {
-            params.headers['x-auth-token'] = token; //pars??
+            params.headers['x-auth-token'] = JSON.parse(token); //pars??
         }
 
         if(body) {

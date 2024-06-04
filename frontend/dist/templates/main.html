@@ -1,0 +1,58 @@
+<div class="container">
+    <h1 class="title" id="main">Главная</h1>
+    <ul class="timebar">
+        <li>
+            <input name="date" type="radio" id="today" value="today" checked>
+            <label for="today" class="btn transparent">
+                <span >Сегодня</span>
+            </label>
+        </li>
+        <li>
+            <input name="date" type="radio" id="week" value="week">
+            <label for="week" class="btn transparent">
+                <span >Неделя</span>
+            </label>
+        </li>
+        <li>
+            <input name="date" type="radio" id="month" value="month">
+            <label for="month" class="btn transparent">
+                <span >Месяц</span>
+            </label>
+        </li>
+        <li>
+            <input name="date" type="radio" id="year" value="year">
+            <label for="year" class="btn transparent">
+                <span >Год</span>
+            </label>
+        </li>
+        <li>
+            <input name="date" type="radio" id="all" value="all">
+            <label for="all" class="btn transparent">
+                <span >Все</span>
+            </label>
+        </li>
+        <li class="interval">
+            <input name="date" type="radio" id="interval" value="interval">
+            <label for="interval" class="btn transparent">
+                <span >Интервал</span>
+            </label>
+            <div class="option">
+                <span>c</span>
+                <input type="date" placeholder="Дата" id="fromDate">
+                <span>по</span>
+                <input type="date" placeholder="Дата" id="toDate">
+            </div>
+        </li>
+    </ul>
+    <div class="graphs">
+        <div class="graph__container">
+            <h2 class="title">Доходы</h2>
+            <div><canvas id="income_canvas"></canvas></div>
+        </div>
+        <div class="line"></div>
+        <div class="graph__container">
+            <h2 class="title">Расходы</h2>
+            <div><canvas id="expense_canvas"></canvas></div>
+        </div>
+    </div>
+</div>

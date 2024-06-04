@@ -74,7 +74,7 @@ class Card {
     readonly btnYesElement: HTMLElement | null = document.getElementById('btnYes');
     readonly btnNoElement: HTMLElement | null =  document.getElementById('btnNo');
 
-    private cardElement: HTMLElement = this.createElement();
+    private cardElement: HTMLElement;
 
     constructor (data: CardInfo, link: string, motherElement: HTMLElement, type: CategoryType) {
         this.type = type;
@@ -82,6 +82,7 @@ class Card {
         this.id = data.id
         this.link = link;
         this.motherElement = motherElement;
+        this.cardElement = this.createElement();
 
         this.motherElement.appendChild(this.cardElement);
     }
@@ -92,6 +93,7 @@ class Card {
 
         const titleElement: HTMLElement = document.createElement('h2');
         titleElement.className = 'title';
+        console.log(this.name)
         titleElement.innerText = this.name;
 
         const actionsElement: HTMLElement = document.createElement('div');

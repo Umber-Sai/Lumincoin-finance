@@ -59,7 +59,7 @@ export class Timebar {
 
         const response: DefaultResponseType | Array<TransactionInfoType> = await CustomHttp.request(url);
 
-        if(response as DefaultResponseType) {
+        if((response as DefaultResponseType).error) {
             this.cb([]);
             return
         }

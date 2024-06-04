@@ -119,11 +119,13 @@ export class Form {
                 "password": this.inputs.find(item => item.name === FormInputNames.password)!.element!.inputElement.value,
                 "rememberMe": this.checkbox.checked
             });
+
             
             if((response as DefaultResponseType).error) {
                 alert('Неверный логин или пароль')
                 throw new Error((response as DefaultResponseType).message)
             }
+
             Auth.setUserInfo((response as AuthType).user)
             Auth.setTokens((response as AuthType).tokens)
     
