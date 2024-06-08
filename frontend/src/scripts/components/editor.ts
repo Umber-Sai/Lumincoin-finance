@@ -68,15 +68,17 @@ class Common {
 
     private async createCategorySelect (selectedType: string, selectedCategory: string | null = null): Promise<void> {
         const options: EditorSelectOptionsType[] | undefined = await this.getCategoryes(selectedType);
+
         if(!options) throw new Error ('Category options undefined');
         const selectElement: Select = new Select(options, selectedCategory, EditorSelectType.category_id);
         this.selectElements.push(selectElement);
+        
     }
 
     private async getCategoryes(type: string): Promise<EditorSelectOptionsType[] | undefined>{
         const categoryes: DefaultResponseType | EditorSelectOptionsType[] = await CustomHttp.request(Config.host + 'categories/' + type);
 
-        if(categoryes as DefaultResponseType) return;
+        if((categoryes as DefaultResponseType).error) throw new Error((categoryes as DefaultResponseType).message);
         return categoryes as EditorSelectOptionsType[];
     }
 
@@ -204,11 +206,11 @@ export class Edit extends Common {
             const result: DefaultResponseType | EditResponseType = await CustomHttp.request(Config.host + this.api[this.type] + this.id);
             if((result as DefaultResponseType).error) throw new Error((result as DefaultResponseType).message);
             if(result as EditResponseType) {
+                if((result as EditResponseType).type) await this.createSelects((result as EditResponseType).type!, (result as EditResponseType).category);
                 this.fillForm();
                 this.insertValues(result as EditResponseType);
             }
 
-            if((result as EditResponseType).type) await this.createSelects((result as EditResponseType).type!, (result as EditResponseType).category);
 
         } catch (error) {
             console.error(error)

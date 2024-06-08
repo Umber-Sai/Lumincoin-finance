@@ -1,4 +1,5 @@
 
+import { error } from "console";
 import { Config } from "../config";
 import { CustomHttp } from "../services/custom-http";
 import { CardInfo, CategoryResponseType, CategorySettings, CategoryType } from "../types/category.type";
@@ -44,6 +45,10 @@ export class Category {
 
     private async fillCategoryes (): Promise<void> {
         const categoryes: DefaultResponseType | CategoryResponseType = await CustomHttp.request(Config.host + 'categories/' + this.type);
+
+        if((categoryes as DefaultResponseType).error) {
+            throw new Error((categoryes as DefaultResponseType).message);
+        }
 
         (categoryes as CategoryResponseType).forEach((category: CardInfo) => {
             new Card(category, this[this.type].linkToEdit, this.cardsElement!, this.type);
@@ -93,7 +98,6 @@ class Card {
 
         const titleElement: HTMLElement = document.createElement('h2');
         titleElement.className = 'title';
-        console.log(this.name)
         titleElement.innerText = this.name;
 
         const actionsElement: HTMLElement = document.createElement('div');

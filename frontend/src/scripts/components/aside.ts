@@ -21,7 +21,6 @@ export class Aside {
         this.navbarButtons.forEach((element: HTMLButtonElement) => {
             element.onclick = (event) => {
                 window.location.href = '#/' + (event.target as HTMLButtonElement).id;
-                // console.log(event.target.id)
             }
         })
 
